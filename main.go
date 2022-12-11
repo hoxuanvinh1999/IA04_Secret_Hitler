@@ -58,9 +58,10 @@ func (g *game) start() {
 	for !g.isGameOver() {
 		// Choix du president pour ce tour
 		president := g.selectPresident()
+		g.currentPresident = president.name
 		// Le president propose un chancelier
 		chancellor := g.selectChancellor(president)
-
+		g.currentChancellor = chancellor.name
 		// Le president pioche 3 cartes et en defausse une
 		cards := g.drawCards(3)
 		discarded, cards := g.presidentDiscards(president, cards)
@@ -135,9 +136,6 @@ func (g *game) selectChancellor(president player) player {
 		}
 	}
 	fmt.Println()
-	for _, p := range g.players {
-		fmt.Println(p.name, p.role)
-	}
 
 	//for _, p := range g.players {
 	//	if p.name == choice {
@@ -206,10 +204,7 @@ func (g *game) reshuffle() {
 	})
 
 	// Ajoute au deck la défausse mélangée
-	fmt.Println("deck", g.deck)
-	fmt.Println("discard", g.discard)
 	g.deck = append(g.deck, g.discard...)
-	fmt.Println("reshuffle", g.deck)
 	g.discard = make([]string, 0)
 }
 
@@ -260,9 +255,17 @@ func (g *game) nextPresident() player {
 
 func (g *game) printResult() {
 	if g.liberalVictory() {
-		fmt.Println("Les libéraux ont gagné")
+		if !g.hitlerIsAlive() {
+			fmt.Println("Hitler est mort, les libéraux ont gagné ! ")
+		} else {
+			fmt.Println("5 lois libérales ont été votées, les libéraux ont gagné ! ")
+		}
 	} else if g.fascistVictory() {
-		fmt.Println("Les fascistes ont gagné")
+		if g.hitlerWasElected() {
+			fmt.Println("Hitler a été élu, les fascistes ont gagné !")
+		} else {
+			fmt.Println("6 lois fascistes ont été votées, les fascistes ont gagné !")
+		}
 	} else {
 		fmt.Println("Bug/égalité ?")
 	}
