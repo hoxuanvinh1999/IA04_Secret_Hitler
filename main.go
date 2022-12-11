@@ -28,15 +28,12 @@ type player struct {
 	role  string
 	alive bool
 	vote  string
-	id    int
 }
 
 type game struct {
 	players                  []player
 	deck                     []string
 	discard                  []string
-	president                int
-	chancellor               int
 	mu                       sync.Mutex
 	logs                     []string
 	liberalPolicies          int
@@ -46,6 +43,7 @@ type game struct {
 	executionAvailable       bool
 	currentPresident         string
 	currentChancellor        string
+	Hitler                   string
 }
 
 func (g *game) log(format string, a ...interface{}) {
@@ -55,24 +53,37 @@ func (g *game) log(format string, a ...interface{}) {
 }
 
 func (g *game) start() {
+	// Qui est Hitler
+	for _, p := range g.players {
+		if p.role == Hitler {
+			g.Hitler = p.name
+			break
+		}
+	}
+
 	for !g.isGameOver() {
 		// Choix du president pour ce tour
 		president := g.selectPresident()
 		g.currentPresident = president.name
 		// Le president propose un chancelier
 		chancellor := g.selectChancellor(president)
-		g.currentChancellor = chancellor.name
-		// Le president pioche 3 cartes et en defausse une
-		cards := g.drawCards(3)
-		discarded, cards := g.presidentDiscards(president, cards)
 
-		// Le chancelier choisit une des deux cartes et defausse l'autre
-		enacted, not_enacted := g.chancellorEnacts(chancellor, cards, discarded)
-
-		// On defausse la carte non choisit
-		g.discard = append(g.discard, not_enacted)
-		// On ajoute la carte choisit
-		g.enactPolicy(enacted)
+		// Si le vote passe, on fait le tour, sinon tour suivant
+		if g.voteOnChancellor(president, chancellor) {
+			g.currentChancellor = chancellor.name
+			// Le president pioche 3 cartes et en defausse une
+			if g.hitlerIsAlive() && g.hitlerWasElected() && g.fascistPolicies >= 3 {
+				break
+			}
+			cards := g.drawCards(3)
+			discarded, cards := g.presidentDiscards(president, cards)
+			// Le chancelier choisit une des deux cartes et defausse l'autre
+			enacted, not_enacted := g.chancellorEnacts(chancellor, cards, discarded)
+			// On defausse la carte non choisit
+			g.discard = append(g.discard, not_enacted)
+			// On ajoute la carte choisit
+			g.enactPolicy(enacted)
+		}
 
 		if g.isGameOver() {
 			break
@@ -93,55 +104,39 @@ func main() {
 	g.start()
 }
 
-func voteOnChancellor(president, chancellor int) bool {
+func (g *game) voteOnChancellor(president, chancellor player) bool {
 	// Vote d'approbation pour le président ("Ja" ou "Nein")
 	return true
 }
 
 func (g *game) selectPresident() player {
-	// Find the current president
-	currentPresident := player{}
-	for _, p := range g.players {
-		if p.role == President {
-			currentPresident = p
-			break
-		}
-	}
-
 	nextPresident := player{}
-	if currentPresident.name == "" {
+	if g.currentPresident == "" {
 		nextPresident = g.players[0]
 	} else {
-		// Le joueur juste apres le president actuel est choisit
 		for i, p := range g.players {
-			if p.name == currentPresident.name {
+			if p.name == g.currentPresident {
 				nextPresident = g.players[(i+1)%len(g.players)]
 				break
 			}
 		}
 	}
-
-	nextPresident.role = President
+	g.currentPresident = nextPresident.name
 	return nextPresident
+
 }
 
 func (g *game) selectChancellor(president player) player {
 	var choice player
 	fmt.Printf("%s, choisis un chancelier", president.name)
 	for _, p := range g.players {
-		if p.name != president.name && p.alive {
+		if p.name != g.currentChancellor && p.alive && p.name != g.currentPresident {
 			fmt.Printf(" %s", p.name)
 			choice = p
 			break
 		}
 	}
 	fmt.Println()
-
-	//for _, p := range g.players {
-	//	if p.name == choice {
-	//		return p
-	//	}
-	//}
 
 	return choice
 }
@@ -226,33 +221,6 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 	return choice, not_choose
 }
 
-func (g *game) nextPresident() player {
-	// Trouve le président actuel
-	var currentPresident player
-	for _, p := range g.players {
-		if p.name == g.currentPresident {
-			currentPresident = p
-			break
-		}
-	}
-
-	// Choisit le prochain président
-	if currentPresident.alive {
-		// Si le président actuel est encore vivant, le président d'après est le joueur à sa droite
-		return g.players[(currentPresident.id+1)%len(g.players)]
-	} else {
-		// Si le président actuel est mort, le prochain présdient est le premier joueur en vie
-		for _, p := range g.players {
-			if p.alive {
-				return p
-			}
-		}
-	}
-
-	// Si pas de joueur vivant trouvé, return un joueur vide
-	return player{}
-}
-
 func (g *game) printResult() {
 	if g.liberalVictory() {
 		if !g.hitlerIsAlive() {
@@ -262,7 +230,8 @@ func (g *game) printResult() {
 		}
 	} else if g.fascistVictory() {
 		if g.hitlerWasElected() {
-			fmt.Println("Hitler a été élu, les fascistes ont gagné !")
+			fmt.Printf("%s, qui était Hitler, a été élu. Les fascistes ont gagné !", g.Hitler)
+			fmt.Println()
 		} else {
 			fmt.Println("6 lois fascistes ont été votées, les fascistes ont gagné !")
 		}
