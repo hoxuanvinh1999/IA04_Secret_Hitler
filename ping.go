@@ -12,6 +12,20 @@ type Agent interface {
 	Start()
 }
 
+type agentPlayer struct {
+	name  string
+	role  string
+	alive bool
+	vote  string
+	cin   chan string
+	cout  chan Request
+}
+
+type PongAgent struct {
+	ID string
+	c  chan Request
+}
+
 func (ag PongAgent) handlePing(req Request) {
 	req.c <- PongString
 }
@@ -31,31 +45,20 @@ func NewPongAgent(id string, c chan Request) *PongAgent {
 	return &PongAgent{id, c}
 }
 
-type PongAgent struct {
-	ID string
-	c  chan Request
-}
-
-func (ag *PingAgent) Start() {
+func (ag *agentPlayer) Start() {
 	go func() {
 		for {
-			ag.cout <- Request{ag.ID, PingString, ag.cin}
+			ag.cout <- Request{ag.name, PingString, ag.cin}
 			answer := <-ag.cin
-			fmt.Printf("agent %q has received: %q\n", ag.ID, answer)
-			time.Sleep(20 * time.Second)
+			fmt.Printf("agent %q has received: %q\n", ag.name, answer)
+			time.Sleep(time.Second)
 		}
 	}()
 }
 
-func NewPingAgent(id string, cout chan Request) *PingAgent {
+func NewAgentPlayer(name string, cout chan Request, role string, alive bool, vote string) *agentPlayer {
 	cin := make(chan string)
-	return &PingAgent{id, cin, cout}
-}
-
-type PingAgent struct {
-	ID   string
-	cin  chan string
-	cout chan Request
+	return &agentPlayer{name, role, alive, vote, cin, cout}
 }
 
 type Request struct {
@@ -69,8 +72,10 @@ func main() {
 	ponger := NewPongAgent("ponger", c)
 	ponger.Start()
 	for i := 0; i < 5; i++ {
-		id := fmt.Sprintf("pinger n°%d", i)
-		pinger := NewPingAgent(id, c)
+		//id := fmt.Sprintf("pinger n°%d", i)
+		name := []string{"Vinh", "Wassim", "Pierre", "Sylvain", "Nathan"}
+		role := []string{Liberal, Fascist, Liberal, Hitler, Liberal}
+		pinger := NewAgentPlayer(name[i], c, role[i], true, Liberal)
 		pinger.Start()
 	}
 	time.Sleep(time.Minute)
