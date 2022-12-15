@@ -14,6 +14,7 @@ const (
 	numberOfLiberals = 7
 	numberOfCards    = 17
 )
+
 const (
 	President  = "President"
 	Chancellor = "Chancellor"

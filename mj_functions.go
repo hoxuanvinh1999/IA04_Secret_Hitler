@@ -141,6 +141,7 @@ func (g *game) selectPresident() player {
 	return nextPresident
 
 }
+
 func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
 	//discarded := make([]string, 0)
 
