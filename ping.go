@@ -93,6 +93,10 @@ func (ag PongAgent) handlePing(req voteRequest) {
 	req.c <- PongString
 }
 
+func (g *game) handlePing(req voteRequest) {
+	req.c <- PongString
+}
+
 func NewPongAgent(id string, c chan voteRequest) *PongAgent {
 	return &PongAgent{id, c}
 }
