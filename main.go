@@ -1,8 +1,13 @@
 package main
 
-func main() {
-	g := newGame([]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"})
+import (
+	"time"
+)
 
+func main() {
+	c := make(chan voteRequest)
+	g := newGame([]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"})
+	g.c = c
 	// c := make(chan voteRequest)
 	// ponger := NewPongAgent("ponger", c)
 
@@ -18,6 +23,14 @@ func main() {
 
 	//g.start(ponger)
 	g.start()
+
+	//Création des agents joueurs
+	for _, p := range g.players {
+		joueur := NewAgentPlayer(p.name, c, p.role, true, Liberal)
+		joueur.Start()
+	}
+
+	time.Sleep(10 * time.Minute)
 }
 
 //func (g *game) investigationAvailable() bool {
