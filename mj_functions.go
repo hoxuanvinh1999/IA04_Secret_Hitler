@@ -163,6 +163,7 @@ func (g *game) presidentDiscards(president player, cards []string) ([]string, []
 
 	return g.discard, cards
 }
+
 func (g *game) governmentWasVotedOut() bool {
 	// Verifie si plus de la moitié des joueurs a rejeter le gouvernement
 	votes := 0
@@ -259,7 +260,7 @@ func remove(slice []string, elems ...string) []string {
 	return slice
 }
 
-func (g *game) start() {
+func (g *game) start() { //ag *agentMJ
 	// Qui est Hitler
 	for _, p := range g.players {
 		if p.role == Hitler {
@@ -267,8 +268,44 @@ func (g *game) start() {
 			break
 		}
 	}
+	//Création de l'agent MJ
+	c := make(chan voteRequest)
+	MJ := NewPongAgent("MJ", c)
+	MJ.Start()
+	//Création des agents joueurs
+	for _, p := range g.players {
+		joueur := NewAgentPlayer(p.name, c, p.role, true, Liberal)
+		joueur.Start()
+	}
 
+	// name := []string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"}
+	// role := []string{Liberal, Fascist, Liberal, Hitler, Liberal}
+
+	// for i := 0; i < 5; i++ {
+	// 	//id := fmt.Sprintf("pinger n°%d", i)
+	// 	pinger := NewAgentPlayer(name[i], c, role[i], true, Liberal)
+	// 	pinger.Start()
+	// }
+
+	// for _, p := range g.players {
+	// 	ag.cout <- Request{"role", "MJ", p.role, ag.cin}
+	// }
+
+	// c := make(chan string)
+	// req := <- c
 	for !g.isGameOver() {
+
+		// ag.cout <- playerRequestToMj{}
+
+		// ag.cout <- voteRequest{"vote", ag.name, PingString, ag.cin}
+		// answer := <-ag.cin
+		// fmt.Printf("agent %q has received: %q\n", ag.name, answer)
+
+		//req := <-ag.c
+		//answer := <-ag.cin
+		//fmt.Printf("le test : agent %q has received %q from %q %q\n", ag.ID,
+		//	req.req, req.senderID, req.typerequest)
+
 		// Choix du president pour ce tour
 		president := g.selectPresident()
 		g.currentPresident = president.name
