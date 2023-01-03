@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -34,7 +33,7 @@ func main() {
 		joueur.Start(g.players)
 	}
 	g.c_to_agent = c_to_agent
-	fmt.Print(g.c_to_agent)
+	//fmt.Print(g.c_to_agent)
 	time.Sleep(10 * time.Minute)
 }
 
