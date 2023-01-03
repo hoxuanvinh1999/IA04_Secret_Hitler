@@ -142,6 +142,40 @@ func (g *game) selectPresident() player {
 
 }
 
+// func (g *game) selectChancellor(president player) player {
+// 	var choice player
+// 	fmt.Printf("%s, choisis un chancelier", president.name)
+// 	for _, p := range g.players {
+// 		if p.name != g.currentChancellor && p.alive && p.name != g.currentPresident {
+// 			fmt.Printf(" %s", p.name)
+// 			choice = p
+// 			break
+// 		}
+// 	}
+// 	fmt.Printf("%s, propose pour chancelier", choice.name)
+// 	fmt.Println()
+
+// 	return choice
+// }
+
+func (g *game) selectChancellor(president player, chancelier player) player {
+	var choice player
+	fmt.Printf("%s, choisis un chancelier\n", president.name)
+	choice = chancelier
+	fmt.Printf("%s, propose pour chancelier %s\n", president.name, choice.name)
+
+	return choice
+}
+
+// func (g *game) selectChancellor(presi player, p player) player {
+// 	nextPresident := player{}
+// 	nextPresident = p
+// 	g.currentPresident = nextPresident.name
+// 	fmt.Println("Le chancelier %q choisit pour président %q.\n", ,nextPresident)
+// 	return nextPresident
+
+// }
+
 func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
 	//discarded := make([]string, 0)
 
@@ -163,6 +197,7 @@ func (g *game) presidentDiscards(president player, cards []string) ([]string, []
 
 	return g.discard, cards
 }
+
 func (g *game) governmentWasVotedOut() bool {
 	// Verifie si plus de la moitié des joueurs a rejeter le gouvernement
 	votes := 0
@@ -231,21 +266,6 @@ func (g *game) printResult() {
 	fmt.Println("Lois fascistes : ", g.fascistPolicies)
 }
 
-func (g *game) selectChancellor(president player) player {
-	var choice player
-	fmt.Printf("%s, choisis un chancelier", president.name)
-	for _, p := range g.players {
-		if p.name != g.currentChancellor && p.alive && p.name != g.currentPresident {
-			fmt.Printf(" %s", p.name)
-			choice = p
-			break
-		}
-	}
-	fmt.Println()
-
-	return choice
-}
-
 // Enleve elements d'un slice
 func remove(slice []string, elems ...string) []string {
 	for _, elem := range elems {
@@ -259,49 +279,130 @@ func remove(slice []string, elems ...string) []string {
 	return slice
 }
 
-func (g *game) start() {
+func (g *game) start() { //ag *agentMJ
 	// Qui est Hitler
-	for _, p := range g.players {
-		if p.role == Hitler {
-			g.Hitler = p.name
-			break
+	go func() {
+		for _, p := range g.players {
+			fmt.Printf("%q est %q \n", p.name, p.role)
 		}
-	}
 
-	for !g.isGameOver() {
-		// Choix du president pour ce tour
-		president := g.selectPresident()
-		g.currentPresident = president.name
-		// Le president propose un chancelier
-		chancellor := g.selectChancellor(president)
-
-		// Si le vote passe, on fait le tour, sinon tour suivant
-		if g.voteOnChancellor(president, chancellor) {
-			g.currentChancellor = chancellor.name
-			// Le president pioche 3 cartes et en defausse une
-			if g.hitlerIsAlive() && g.hitlerWasElected() && g.fascistPolicies >= 3 {
+		//req := <-g.c
+		//fmt.Printf("Le mj a recu : je suis %q, mon role est %q j'envoie %q, et j'envoie une requête de type %q \n", req.senderID, req.role, req.req, req.typerequest)
+		for _, p := range g.players {
+			if p.role == Hitler {
+				g.Hitler = p.name
 				break
 			}
-			cards := g.drawCards(3)
-			discarded, cards := g.presidentDiscards(president, cards)
-			// Le chancelier choisit une des deux cartes et defausse l'autre
-			enacted, not_enacted := g.chancellorEnacts(chancellor, cards, discarded)
-			// On defausse la carte non choisit
-			g.discard = append(g.discard, not_enacted)
-			// On ajoute la carte choisit
-			g.enactPolicy(enacted)
+		}
+		//Création de l'agent MJ
+		//c := make(chan voteRequest)
+		//MJ := NewPongAgent("MJ", c)
+		//MJ.Start()
+
+		//Création des agents joueurs
+		// for _, p := range g.players {
+		// 	joueur := NewAgentPlayer(p.name, c, p.role, true, Liberal)
+		// 	joueur.Start()
+		// }
+
+		// name := []string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"}
+		// role := []string{Liberal, Fascist, Liberal, Hitler, Liberal}
+
+		// for i := 0; i < 5; i++ {
+		// 	//id := fmt.Sprintf("pinger n°%d", i)
+		// 	pinger := NewAgentPlayer(name[i], c, role[i], true, Liberal)
+		// 	pinger.Start()
+		// }
+
+		// for _, p := range g.players {
+		// 	ag.cout <- Request{"role", "MJ", p.role, ag.cin}
+		// }
+
+		// c := make(chan string)
+		// req := <- c
+		//g.currentPresident = "Pierre"
+		for !g.isGameOver() {
+
+			// ag.cout <- playerRequestToMj{}
+
+			// ag.cout <- voteRequest{"vote", ag.name, PingString, ag.cin}
+			// answer := <-ag.cin
+			// fmt.Printf("agent %q has received: %q\n", ag.name, answer)
+
+			//req := <-ag.c
+			//answer := <-ag.cin
+			//fmt.Printf("le test : agent %q has received %q from %q %q\n", ag.ID,
+			//	req.req, req.senderID, req.typerequest)
+			//roles := make([]string, numPlayers)
+			//newreq := make(chan, voteRequest)
+
+			//newreq := <-g.c
+			//fmt.Printf("Le mj a recu : je suis %q, mon role est %q j'envoie %q, et j'envoie une requête de type %q \n", newreq.senderID, newreq.role, newreq.req, newreq.typerequest)
+
+			// for i := range g.players {
+			// 	if i == len(g.players)-1 {
+			// 		break
+			// 	}
+			// 	newreq = <-g.c
+			// 	fmt.Printf("Le mj a recu : je suis %q, mon role est %q, j'envoie %q et j'envoie une requête de type %q \n", newreq.senderID, newreq.role, newreq.req, newreq.typerequest)
+			// 	if g.currentPresident == newreq.senderID {
+			// 		go g.choisisPres(newreq)
+			// 		go g.choisisPres(newreq)
+			// 		newreq = <-g.c
+
+			// 		//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
+			// 	}
+			// 	time.Sleep(500 * time.Millisecond)
+			// }
+			// Choix du president pour ce tour
+			president := g.selectPresident()
+
+			for _, p := range g.players {
+				if g.currentPresident == p.name {
+					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p}
+
+					//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
+				}
+				time.Sleep(500 * time.Millisecond)
+			}
+
+			newreq := <-g.c
+
+			time.Sleep(1 * time.Second)
+			//Lui demander de choisir un president
+
+			g.currentPresident = president.name
+			// Le president propose un chancelier
+			chancellor := g.selectChancellor(president, newreq.playerpres)
+
+			// Si le vote passe, on fait le tour, sinon tour suivant
+			if g.voteOnChancellor(president, chancellor) {
+				g.currentChancellor = chancellor.name
+				// Le president pioche 3 cartes et en defausse une
+				if g.hitlerIsAlive() && g.hitlerWasElected() && g.fascistPolicies >= 3 {
+					break
+				}
+				cards := g.drawCards(3)
+				discarded, cards := g.presidentDiscards(president, cards)
+				// Le chancelier choisit une des deux cartes et defausse l'autre
+				enacted, not_enacted := g.chancellorEnacts(chancellor, cards, discarded)
+				// On defausse la carte non choisit
+				g.discard = append(g.discard, not_enacted)
+				// On ajoute la carte choisit
+				g.enactPolicy(enacted)
+			}
+
+			if g.isGameOver() {
+				break
+			}
+			// Si le gouvernement est refuse, on choisit un nouveau president
+			if g.governmentWasVotedOut() {
+				fmt.Println("gov voted out")
+				president = g.selectPresident()
+			}
+
 		}
 
-		if g.isGameOver() {
-			break
-		}
-		// Si le gouvernement est refuse, on choisit un nouveau president
-		if g.governmentWasVotedOut() {
-			fmt.Println("gov voted out")
-			president = g.selectPresident()
-		}
-
-	}
-
-	g.printResult()
+		g.printResult()
+	}()
 }
