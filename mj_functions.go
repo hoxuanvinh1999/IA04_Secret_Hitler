@@ -122,7 +122,22 @@ func (g *game) enactPolicy(policy string) {
 
 func (g *game) voteOnChancellor(president, chancellor player) bool {
 	// Vote d'approbation pour le président ("Ja" ou "Nein")
-	return true
+	nb_Ja := 0
+	nb_Nein := 0
+	for _, p := range g.players {
+		fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, president.name)
+		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, president, []string{"Liberal"}, true}
+		answer := <-g.c
+		if answer.Ja {
+			nb_Ja += 1
+		} else {
+			nb_Nein += 1
+		}
+
+		time.Sleep(100 * time.Millisecond)
+	}
+
+	return nb_Ja > nb_Nein
 }
 
 func (g *game) selectPresident() player {
@@ -204,11 +219,11 @@ func (g *game) presidentDiscards(president player, cards []string) ([]string, []
 			}
 			fmt.Println()
 
-			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards}
+			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards, true}
 			answer := <-g.c
 			choice1 = answer.cards[0]
 		}
-		time.Sleep(300 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 
 	// On defausse la carte
@@ -274,7 +289,7 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 			}
 			fmt.Println()
 
-			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards}
+			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards, true}
 			answer := <-g.c
 			choice = answer.cards[0]
 			if choice == cards[0] {
@@ -283,7 +298,7 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 				not_choose = cards[0]
 			}
 		}
-		time.Sleep(300 * time.Millisecond)
+		time.Sleep(200 * time.Millisecond)
 	}
 
 	return choice, not_choose
@@ -349,17 +364,16 @@ func (g *game) start() { //ag *agentMJ
 
 			for _, p := range g.players {
 				if g.currentPresident == p.name {
-					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}}
+					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}, true}
 
 					//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
 				}
-				time.Sleep(300 * time.Millisecond)
+				time.Sleep(200 * time.Millisecond)
 			}
 
 			newreq := <-g.c
 
-			time.Sleep(300 * time.Millisecond)
-			//Lui demander de choisir un president
+			time.Sleep(200 * time.Millisecond)
 
 			g.currentPresident = president.name
 			// Le president propose un chancelier
