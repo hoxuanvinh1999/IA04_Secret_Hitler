@@ -25,6 +25,7 @@ type voteRequest struct {
 	req         string
 	c           chan voteRequest
 	playerpres  player
+	cards       []string
 }
 
 type Agent interface {
@@ -95,19 +96,19 @@ type PongAgent struct {
 }
 
 func (ag PongAgent) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
 }
 
 func (ag PongAgent) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
 }
 
 func (g *game) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
 }
 
 func (g *game) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
 }
 
 func NewPongAgent(id string, c chan voteRequest) *PongAgent {
@@ -150,8 +151,16 @@ func (ag *agentPlayer) Start(list_player []player) {
 				for _, p := range list_player {
 					player_vide = p
 				}
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}}
 				//answer := <-ag.cin
+			} else if answer.typerequest == "choisisdiscards" {
+				fmt.Printf("Agent %q has received: %q %q\n", ag.name, answer.typerequest, answer.cards)
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1]}
+
+			} else if answer.typerequest == "enact" {
+				fmt.Printf("Agent %q has received: %q %q\n", ag.name, answer.typerequest, answer.cards)
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1]}
+
 			} else {
 				fmt.Printf("agent %q has received: %q\n", ag.name, answer)
 			}
@@ -160,7 +169,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 			// 	fmt.Printf("reciu pongngngngn")
 			// }
 
-			time.Sleep(10 * time.Second)
+			time.Sleep(1 * time.Second)
 
 		}
 	}()
