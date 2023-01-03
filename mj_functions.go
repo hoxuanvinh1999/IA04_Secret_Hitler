@@ -176,25 +176,45 @@ func (g *game) selectChancellor(president player, chancelier player) player {
 
 // }
 
+// func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
+// 	//discarded := make([]string, 0)
+// 	fmt.Printf("%s, choisis une carte à défausser : ", president.name)
+// 	for _, card := range cards {
+// 		fmt.Printf(" %s", card)
+// 	}
+// 	fmt.Println()
+// 	// Scan choix du president
+// 	var choice1 string
+// 	fmt.Scanln(&choice1)
+// 	// On defausse la carte
+// 	g.discard = append(g.discard, choice1)
+// 	// On enleve la carte des cartes à choisir
+// 	cards = remove(cards, choice1)
+
+// 	return g.discard, cards
+// }
+
 func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
-	//discarded := make([]string, 0)
-
-	fmt.Printf("%s, choisis une carte à défausser : ", president.name)
-	for _, card := range cards {
-		fmt.Printf(" %s", card)
-	}
-	fmt.Println()
-
-	// Scan choix du president
 	var choice1 string
-	fmt.Scanln(&choice1)
+	for _, p := range g.players {
+		if g.currentPresident == p.name {
+			fmt.Printf("%s, choisis une carte à défausser : ", president.name)
+			for _, card := range cards {
+				fmt.Printf(" %s", card)
+			}
+			fmt.Println()
+
+			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards}
+			answer := <-g.c
+			choice1 = answer.cards[0]
+		}
+		time.Sleep(300 * time.Millisecond)
+	}
 
 	// On defausse la carte
 	g.discard = append(g.discard, choice1)
-
 	// On enleve la carte des cartes à choisir
 	cards = remove(cards, choice1)
-
 	return g.discard, cards
 }
 
@@ -225,22 +245,49 @@ func (g *game) reshuffle() {
 	g.discard = make([]string, 0)
 }
 
+// func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (string, string) {
+// 	fmt.Printf("%s, choisis une loi à adopter :", chancellor.name)
+// 	for _, card := range cards {
+// 		fmt.Printf(" %s", card)
+// 	}
+// 	fmt.Println()
+// 	var choice string
+// 	var not_choose string
+// 	fmt.Scanln(&choice)
+// 	if choice == cards[0] {
+// 		not_choose = cards[1]
+// 	} else {
+// 		not_choose = cards[0]
+// 	}
+
+// 	return choice, not_choose
+// }
+
 func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (string, string) {
-	fmt.Printf("%s, choisis une loi à adopter :", chancellor.name)
-	for _, card := range cards {
-		fmt.Printf(" %s", card)
-	}
-	fmt.Println()
 	var choice string
 	var not_choose string
-	fmt.Scanln(&choice)
-	if choice == cards[0] {
-		not_choose = cards[1]
-	} else {
-		not_choose = cards[0]
+	for _, p := range g.players {
+		if g.currentPresident == p.name {
+			fmt.Printf("%s, choisis une loi à adopter :", chancellor.name)
+			for _, card := range cards {
+				fmt.Printf(" %s", card)
+			}
+			fmt.Println()
+
+			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards}
+			answer := <-g.c
+			choice = answer.cards[0]
+			if choice == cards[0] {
+				not_choose = cards[1]
+			} else {
+				not_choose = cards[0]
+			}
+		}
+		time.Sleep(300 * time.Millisecond)
 	}
 
 	return choice, not_choose
+
 }
 
 func (g *game) printResult() {
@@ -294,81 +341,24 @@ func (g *game) start() { //ag *agentMJ
 				break
 			}
 		}
-		//Création de l'agent MJ
-		//c := make(chan voteRequest)
-		//MJ := NewPongAgent("MJ", c)
-		//MJ.Start()
 
-		//Création des agents joueurs
-		// for _, p := range g.players {
-		// 	joueur := NewAgentPlayer(p.name, c, p.role, true, Liberal)
-		// 	joueur.Start()
-		// }
-
-		// name := []string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"}
-		// role := []string{Liberal, Fascist, Liberal, Hitler, Liberal}
-
-		// for i := 0; i < 5; i++ {
-		// 	//id := fmt.Sprintf("pinger n°%d", i)
-		// 	pinger := NewAgentPlayer(name[i], c, role[i], true, Liberal)
-		// 	pinger.Start()
-		// }
-
-		// for _, p := range g.players {
-		// 	ag.cout <- Request{"role", "MJ", p.role, ag.cin}
-		// }
-
-		// c := make(chan string)
-		// req := <- c
-		//g.currentPresident = "Pierre"
 		for !g.isGameOver() {
 
-			// ag.cout <- playerRequestToMj{}
-
-			// ag.cout <- voteRequest{"vote", ag.name, PingString, ag.cin}
-			// answer := <-ag.cin
-			// fmt.Printf("agent %q has received: %q\n", ag.name, answer)
-
-			//req := <-ag.c
-			//answer := <-ag.cin
-			//fmt.Printf("le test : agent %q has received %q from %q %q\n", ag.ID,
-			//	req.req, req.senderID, req.typerequest)
-			//roles := make([]string, numPlayers)
-			//newreq := make(chan, voteRequest)
-
-			//newreq := <-g.c
-			//fmt.Printf("Le mj a recu : je suis %q, mon role est %q j'envoie %q, et j'envoie une requête de type %q \n", newreq.senderID, newreq.role, newreq.req, newreq.typerequest)
-
-			// for i := range g.players {
-			// 	if i == len(g.players)-1 {
-			// 		break
-			// 	}
-			// 	newreq = <-g.c
-			// 	fmt.Printf("Le mj a recu : je suis %q, mon role est %q, j'envoie %q et j'envoie une requête de type %q \n", newreq.senderID, newreq.role, newreq.req, newreq.typerequest)
-			// 	if g.currentPresident == newreq.senderID {
-			// 		go g.choisisPres(newreq)
-			// 		go g.choisisPres(newreq)
-			// 		newreq = <-g.c
-
-			// 		//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
-			// 	}
-			// 	time.Sleep(500 * time.Millisecond)
-			// }
 			// Choix du president pour ce tour
 			president := g.selectPresident()
 
 			for _, p := range g.players {
 				if g.currentPresident == p.name {
-					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p}
+					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}}
 
 					//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
 				}
-				time.Sleep(500 * time.Millisecond)
+				time.Sleep(300 * time.Millisecond)
 			}
 
 			newreq := <-g.c
 
-			time.Sleep(1 * time.Second)
+			time.Sleep(300 * time.Millisecond)
 			//Lui demander de choisir un president
 
 			g.currentPresident = president.name
@@ -383,6 +373,7 @@ func (g *game) start() { //ag *agentMJ
 					break
 				}
 				cards := g.drawCards(3)
+
 				discarded, cards := g.presidentDiscards(president, cards)
 				// Le chancelier choisit une des deux cartes et defausse l'autre
 				enacted, not_enacted := g.chancellorEnacts(chancellor, cards, discarded)
