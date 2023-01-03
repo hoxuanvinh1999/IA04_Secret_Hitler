@@ -25,9 +25,13 @@ type player struct {
 	role  string
 	alive bool
 	vote  string
+	cin   chan voteRequest
 }
 
 type game struct {
+	ID                       string
+	c                        chan voteRequest
+	c_to_agent               map[string]chan voteRequest
 	players                  []player
 	deck                     []string
 	discard                  []string
