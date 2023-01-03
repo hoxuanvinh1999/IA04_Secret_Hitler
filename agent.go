@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 func (g *game) log(format string, a ...interface{}) {
@@ -11,6 +10,7 @@ func (g *game) log(format string, a ...interface{}) {
 	g.logs = append(g.logs, fmt.Sprintf(format, a...))
 }
 
+/*
 type agentPlayer struct {
 	name  string
 	role  string
@@ -35,3 +35,4 @@ func (ag *agentPlayer) Start() {
 		}
 	}()
 }
+*/
