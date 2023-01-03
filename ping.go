@@ -26,6 +26,7 @@ type voteRequest struct {
 	c           chan voteRequest
 	playerpres  player
 	cards       []string
+	Ja          bool
 }
 
 type Agent interface {
@@ -96,19 +97,19 @@ type PongAgent struct {
 }
 
 func (ag PongAgent) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
 }
 
 func (ag PongAgent) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
 }
 
 func (g *game) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
 }
 
 func (g *game) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
 }
 
 func NewPongAgent(id string, c chan voteRequest) *PongAgent {
@@ -151,18 +152,22 @@ func (ag *agentPlayer) Start(list_player []player) {
 				for _, p := range list_player {
 					player_vide = p
 				}
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true}
 				//answer := <-ag.cin
 			} else if answer.typerequest == "choisisdiscards" {
-				fmt.Printf("Agent %q has received: %q %q\n", ag.name, answer.typerequest, answer.cards)
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1]}
+				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
 
 			} else if answer.typerequest == "enact" {
-				fmt.Printf("Agent %q has received: %q %q\n", ag.name, answer.typerequest, answer.cards)
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1]}
+				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
+
+			} else if answer.typerequest == "vote" {
+				fmt.Printf("Agent %q a reçu une demande de %q pour élire %q chancelier. \n", ag.name, answer.typerequest, answer.playerpres.name)
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
 
 			} else {
-				fmt.Printf("agent %q has received: %q\n", ag.name, answer)
+				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
 			}
 
 			// if answer.typerequest == "vote" {
