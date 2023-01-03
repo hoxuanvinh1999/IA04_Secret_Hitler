@@ -28,6 +28,8 @@ type player struct {
 }
 
 type game struct {
+	ID                       string
+	c                        chan voteRequest
 	players                  []player
 	deck                     []string
 	discard                  []string
