@@ -1,4 +1,5 @@
 # IA04 - Secret Hitler
+GHARBI Wassim - Nathan Le Boudec - Pierre Hannart - Xuan Vinh Ho
 
 ## Présentation du jeu 
 
@@ -32,7 +33,9 @@ Pouvoirs Présidentiels :
 2) Le candidat à la Présidence désigne un candidat à la Chancellerie.
 
 3) Election : Les joueurs votent OUI ou NON pour le nouveau gouvernement. Il est élu si plus de la moitié votent OUI.
+
 Si le NON gagne :
+
 Le jeton Election n'est pas sur 3 --> Nouveau tour
 Le jeton Election est sur 3 --> CHAOS
 
