@@ -17,7 +17,7 @@ func main() {
 	c := make(chan voteRequest)
 	g := newGame([]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"})
 	g.c = c
-
+	g.end = false
 	g.start()
 	c_to_agent := make(map[string]chan voteRequest)
 	//Création des agents joueurs
@@ -36,6 +36,7 @@ func main() {
 		joueur.Start(g.players)
 	}
 	g.c_to_agent = c_to_agent
+
 	time.Sleep(10 * time.Minute)
 
 	time.Sleep(10 * time.Minute)
