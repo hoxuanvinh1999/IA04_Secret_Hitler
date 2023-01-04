@@ -60,4 +60,5 @@ type game struct {
 	prevChancellor           player
 	Hitler                   string
 	website                  Website
+	end                      bool
 }
