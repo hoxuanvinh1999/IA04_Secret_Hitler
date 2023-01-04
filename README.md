@@ -4,7 +4,7 @@ GHARBI Wassim - Nathan Le Boudec - Pierre Hannart - Xuan Vinh Ho
 ## Présentation du jeu
 Secret Hitler est un jeu à rôle secret (à l'instar du Loup Garou) dramatique d'intrigues et de trahisons politiques se déroulant dans les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est aléatoirement et secrètement assigné à être un libéral ou un fasciste, et un joueur est Hitler. Les fascistes se coordonnent pour semer la méfiance et installer leur chef de sang froid ; les libéraux doivent trouver et arrêter Hitler avant qu'il ne soit trop tard.
 
-AJOUTER UNE IMAGE DU PLATEAU DE JEU
+![](https://www.booksmith.com/sites/booksmith.com/files/styles/uc_product_full/public/SH_1.jpg?itok=EkNll-H7)
 
 ### Rôles
 5 à 6 joueurs : Les fascistes se connaissent entre eux. Mais seul Hitler sait qu'il est Hitler.
@@ -84,18 +84,12 @@ Pour le front-end, [à compléter]
 ## Bilan
 
 ### Points positifs
+1. La possibilité de faire varier des méta-paramètres tels que la stratégie adoptée par un joueur.
+2.
 
 ### Points négatifs
-Le point influençant directement les résultats est le comportement est l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascistes doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
-
-- Méta-paramètres 
-- Intelligence des agents (comment ca impacte la simulation)
-- Developper les situations que l'on peut rencontrer (victoire probable des fascistes ou liberaux, blocage,....)
-- Niveau du code aussi
-
-
-
-A partir de ce point, nous avons donc pu faire ces observations : 
+1. Seule la version où les fascistes se connaissent entre eux et où seul Hitler sait qu'il est Hitler a été implémentée. Également, les règles spéciales n'ont pas été implémentées.
+2. Le point influençant directement les résultats est le comportement est l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascistes doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
 
 
 
