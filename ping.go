@@ -164,7 +164,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 			} else if answer.typerequest == "vote" {
 				fmt.Printf("Agent %q a reçu une demande de %q pour élire %q chancelier. \n", ag.name, answer.typerequest, answer.playerpres.name)
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
+				ag.cout <- voteRequest{"vote", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
 
 			} else {
 				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
