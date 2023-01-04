@@ -36,3 +36,27 @@ func (ag *agentPlayer) Start() {
 	}()
 }
 */
+
+func (ag1 *agentPlayer) BeliefUp(ag2 player) {
+	for i := 0; i < len(ag1.currentGame.players); i++ {
+		if ag1.currentGame.players[i] == ag2 {
+			ag1.beliefs[ag1.currentGame.players[i]] += 1
+		}
+	}
+}
+
+func (ag1 *agentPlayer) BeliefDown(ag2 player) {
+	for i := 0; i < len(ag1.currentGame.players); i++ {
+		if ag1.currentGame.players[i] == ag2 {
+			ag1.beliefs[ag1.currentGame.players[i]] -= 1
+		}
+	}
+}
+
+func (ag1 *agentPlayer) BothFascists(ag2 player) {
+	for i := 0; i < len(ag1.currentGame.players); i++ {
+		if ag1.currentGame.players[i] == ag2 {
+			ag1.beliefs[ag1.currentGame.players[i]] = 1
+		}
+	}
+}
