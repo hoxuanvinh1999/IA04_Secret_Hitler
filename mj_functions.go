@@ -147,8 +147,10 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 
 	if nb_Ja > nb_Nein {
 		fmt.Println("Le résultat de l'élection est JA !")
+		g.result_vote = true
 	} else {
 		fmt.Println("Le résultat de l'élection est NEIN !")
+		g.result_vote = false
 	}
 
 	return nb_Ja > nb_Nein
@@ -219,7 +221,7 @@ func (g *game) selectChancellor(president player, chancelier player) player {
 	fmt.Printf("%s, choisis un chancelier\n", president.name)
 	choice = chancelier
 	fmt.Printf("%s, propose pour chancelier %s\n", president.name, choice.name)
-
+	g.propChancellor = choice
 	return choice
 }
 
