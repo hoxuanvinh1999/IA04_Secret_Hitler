@@ -446,6 +446,8 @@ func (g *game) start() { //ag *agentMJ
 	// Qui est Hitler
 	go func() {
 		for _, p := range g.players {
+			//give time for the web to load
+			time.Sleep(1 * time.Second)
 			fmt.Printf("%q est %q \n", p.name, p.role)
 		}
 
