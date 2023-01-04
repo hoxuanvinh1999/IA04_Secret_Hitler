@@ -5,6 +5,7 @@ GHARBI Wassim - Nathan Le Boudec - Pierre Hannart - Xuan Vinh Ho
 Secret Hitler est un jeu à rôle secret (à l'instar du Loup Garou) dramatique d'intrigues et de trahisons politiques se déroulant dans les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est aléatoirement et secrètement assigné à être un libéral ou un fasciste, et un joueur est Hitler. Les fascistes se coordonnent pour semer la méfiance et installer leur chef de sang froid ; les libéraux doivent trouver et arrêter Hitler avant qu'il ne soit trop tard.
 
 ![](https://www.booksmith.com/sites/booksmith.com/files/styles/uc_product_full/public/SH_1.jpg?itok=EkNll-H7)
+![](https://d1clhjx8k26u75.cloudfront.net/wp-content/uploads/2019/06/03170158/SecretHitlerBoardGameComponents.jpg)
 
 ### Rôles
 5 à 6 joueurs : Les fascistes se connaissent entre eux. Mais seul Hitler sait qu'il est Hitler.
