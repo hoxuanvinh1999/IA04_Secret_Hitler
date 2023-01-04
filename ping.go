@@ -10,6 +10,7 @@ const PongString = "pong"
 
 var c chan voteRequest
 var player_vide = player{"rien", "rien", false, "rien", c}
+var choice = ""
 
 type Request struct {
 	typerequest string
@@ -78,12 +79,14 @@ type mjInformPlayer struct {
 }
 
 type agentPlayer struct {
-	name  string
-	role  string
-	alive bool
-	vote  string
-	cin   chan voteRequest
-	cout  chan voteRequest
+	name        string
+	role        string
+	alive       bool
+	vote        string
+	cin         chan voteRequest
+	cout        chan voteRequest
+	beliefs     map[player]int
+	currentGame *game
 }
 
 type agentMJ struct {
@@ -135,9 +138,14 @@ func (ag *PongAgent) Start() {
 	}()
 }
 
-func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string) *agentPlayer {
+func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game) *agentPlayer {
 	//cin := make(chan voteRequest)
-	return &agentPlayer{name, role, alive, vote, cin, cout}
+	beliefs := make(map[player]int, len(currentGame.players))
+	for i := 0; i < len(currentGame.players); i++ {
+		beliefs[currentGame.players[i]] = 3
+	}
+
+	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame}
 }
 
 func (ag *agentPlayer) Start(list_player []player) {
@@ -150,13 +158,45 @@ func (ag *agentPlayer) Start(list_player []player) {
 				fmt.Printf("agent %q has received: %q\n", ag.name, answer.typerequest)
 				fmt.Printf("Je vais choisir un chancelier.\n")
 				for _, p := range list_player {
-					player_vide = p
+					if ag.role == Fascist || ag.role == Hitler {
+						if (p.role == Fascist || p.role == Hitler) && (ag.name != p.name) {
+							player_vide = p
+							break
+						}
+					} else {
+						if (ag.beliefs[p] > 2) && (ag.name != p.name) {
+							player_vide = p
+						}
+					}
 				}
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true}
+
 				//answer := <-ag.cin
 			} else if answer.typerequest == "choisisdiscards" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
+				if ag.role == Fascist || ag.role == Hitler {
+					for i := range answer.cards {
+						if answer.cards[i] == "Liberal" {
+							choice = answer.cards[i]
+							break
+						} else {
+							choice = answer.cards[0]
+						}
+					}
+				} else {
+					for i := range answer.cards {
+						if answer.cards[i] == "Fascist" {
+							choice = answer.cards[i]
+							break
+						} else {
+							choice = answer.cards[0]
+						}
+					}
+				}
+				answer.cards = remove(answer.cards, choice)
+				answer.cards = append(answer.cards, choice)
+
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true}
 
 			} else if answer.typerequest == "enact" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
@@ -164,7 +204,22 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 			} else if answer.typerequest == "vote" {
 				fmt.Printf("Agent %q a reçu une demande de %q pour élire %q chancelier. \n", ag.name, answer.typerequest, answer.playerpres.name)
-				ag.cout <- voteRequest{"vote", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
+
+				if ag.role == Fascist || ag.role == Hitler {
+					if answer.playerpres.role == Fascist || answer.playerpres.role == Hitler {
+						answer.Ja = true
+					} else {
+						answer.Ja = false
+					}
+				} else { // le joueur est libéral
+					if ag.beliefs[answer.playerpres] < 3 {
+						answer.Ja = false
+					} else {
+						answer.Ja = true
+					}
+				}
+
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja}
 
 			} else {
 				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
