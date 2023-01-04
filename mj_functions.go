@@ -168,10 +168,10 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 		time.Sleep(100 * time.Millisecond)
 	}
 
-	if nb_Ja > nb_Nein {		
-		fmt.Println("Le résultat de l'élection est JA !")		
-	} else {		
-		fmt.Println("Le résultat de l'élection est NEIN !")		
+	if nb_Ja > nb_Nein {
+		fmt.Println("Le résultat de l'élection est JA !")
+	} else {
+		fmt.Println("Le résultat de l'élection est NEIN !")
 	}
 
 	return nb_Ja > nb_Nein
@@ -363,8 +363,8 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 		time.Sleep(200 * time.Millisecond)
 	}
 
-	fmt.Println("Carte posée :", choice)		
-	g.prevPresident = g.currentPresident		
+	fmt.Println("Carte posée :", choice)
+	g.prevPresident = g.currentPresident
 	g.prevChancellor = g.currentChancellor
 
 	return choice, not_choose
@@ -476,5 +476,7 @@ func (g *game) start() { //ag *agentMJ
 		}
 
 		g.printResult()
+		g.end = true
+		time.Sleep(30 * time.Second)
 	}()
 }
