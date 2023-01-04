@@ -1,15 +1,12 @@
 # IA04 - Secret Hitler
 GHARBI Wassim - Nathan Le Boudec - Pierre Hannart - Xuan Vinh Ho
 
-## Présentation du jeu 
-
-Secret Hitler est un jeu dramatique d'intrigues et de trahisons politiques se déroulant dans
-les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est aléatoirement et secrètement assigné à être un libéral ou un fasciste, et un joueur est Hitler. Les fascistes se coordonnent pour semer la méfiance et installer leur chef de sang froid ; les libéraux doivent trouver et arrêter Hitler avant qu'il ne soit trop tard.
+## Présentation du jeu
+Secret Hitler est un jeu à rôle secret (à l'instar du Loup Garou) dramatique d'intrigues et de trahisons politiques se déroulant dans les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est aléatoirement et secrètement assigné à être un libéral ou un fasciste, et un joueur est Hitler. Les fascistes se coordonnent pour semer la méfiance et installer leur chef de sang froid ; les libéraux doivent trouver et arrêter Hitler avant qu'il ne soit trop tard.
 
 AJOUTER UNE IMAGE DU PLATEAU DE JEU
 
 ### Rôles
-
 5 à 6 joueurs : Les fascistes se connaissent entre eux. Mais seul Hitler sait qu'il est Hitler.
 
 7 à 10 joueurs : Les fascistes, sauf Hitler, se connaissent entre eux. Hitler révèle son identité aux fascistes en faisant un signe de main les yeux fermés.
@@ -17,12 +14,10 @@ AJOUTER UNE IMAGE DU PLATEAU DE JEU
 Les libéraux ne connaissent bien-sûr le parti d'aucun des joueurs.
 
 ### Conditions de victoire
-
 Libéraux : 5 lois libérales promulguées OU Hitler exécuté.
 Fascites : 6 lois fascistes promulguées OU Hitler élu Chancelier avec 3 lois fascistes promulguées.
 
 ### Règles spéciales
-
 CHAOS : 
 - La carte du dessus de la pioche LOIS est révélée et promulguée.
 - Le jeton Election est réinitialisé.
@@ -35,7 +30,6 @@ Pouvoirs Présidentiels :
 - Exécution : Le président tue un joueur.
 
 ### Tour de jeu
-
 1) Le joueur à la gauche du Président devient le nouveau candidat à la Présidence.
 
 2) Le candidat à la Présidence désigne un candidat à la Chancellerie.
@@ -58,13 +52,27 @@ Cas particuliers :
 
 ## Objectifs du projet
 
-L'objectif de notre projet est de simuler un partie de Secret-Hitler jouée par des agents, sans intervention externe.
+### Qu'est-il sensé faire ?
 
-Grâce à la simulation, nous tenterons de mettre en évidence la meilleur stratégie à adopter, selon les rôles, pour jouer à Secret-Hitler.
+L'objectif de notre projet est de simuler une partie de Secret Hitler jouée par des agents (plusieurs agents clients et un client serveur), sans intervention externe.
 
-## Installation et Lancement du jeu
+### Que sommes nous sensés observer ?
 
-## Architecture et Code
+Nous sommes sensés observer un plateau de jeu avec des joueurs (ayant des noms, des rôles, etc.) et effectuant des actions telles que poser des cartes.
+
+### Problématique
+
+Grâce à la simulation, nous tenterons de mettre en évidence la meilleur stratégie à adopter, selon les rôles, pour jouer (et gagner) à Secret Hitler.
+
+## Installation et lancement du jeu
+Pour réaliser le projet "Secret Hitler", vous devez suivre ces étapes :
+1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler
+2. Entrer dans le dossier "backend" : $ cd backend
+Démarrer le back-end (et le front-end par la même occasion) :
+Créer le module : $ go mod init main.go
+Lancer les clients et le serveur : $ go run .
+
+## Architecture et code
 
 ## Discussions (differents points à noter sur le projet)
 
