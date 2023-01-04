@@ -8,6 +8,12 @@ les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est alé
 
 ### Rôles
 
+5 à 6 joueurs : Les fascistes se connaissent entre eux. Mais seul Hitler sait qu'il est Hitler.
+
+7 à 10 joueurs : Les fascistes, sauf Hitler, se connaissent entre eux. Hitler révèle son identité aux fascistes en faisant un signe de main les yeux fermés.
+
+Les libéraux ne connaissent bien-sûr le parti d'aucun des joueurs.
+
 ### Conditions de victoire
 
 Libéraux : 5 lois libérales promulguées OU Hitler exécuté.
@@ -37,6 +43,7 @@ Pouvoirs Présidentiels :
 Si le NON gagne :
 
 Le jeton Election n'est pas sur 3 --> Nouveau tour
+
 Le jeton Election est sur 3 --> CHAOS
 
 4) Tant que la loi n'est pas promulguée, le Président et le Chancelier doivent rester neutre.
