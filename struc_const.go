@@ -63,4 +63,7 @@ type game struct {
 	end                      bool
 	propChancellor           player
 	result_vote              bool
+	nombre_echec             int
+	chaos                    bool
+	result_game              string
 }
