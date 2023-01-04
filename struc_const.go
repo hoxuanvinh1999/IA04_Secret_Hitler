@@ -28,6 +28,18 @@ type player struct {
 	cin   chan voteRequest
 }
 
+type Website struct {
+	Game_title         string
+	Time               string
+	Players_name       []string
+	Players_side       []string
+	Players_alive      []string
+	Liberal_board      []string
+	Fascist_board      []string
+	Current_President  string
+	Current_Chancellor string
+}
+
 type game struct {
 	ID                       string
 	c                        chan voteRequest
@@ -45,4 +57,5 @@ type game struct {
 	currentPresident         string
 	currentChancellor        string
 	Hitler                   string
+	website                  Website
 }
