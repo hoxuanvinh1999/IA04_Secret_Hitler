@@ -55,6 +55,7 @@ Cas particuliers :
 ### Qu'est-il sensé faire ?
 
 L'objectif de notre projet est de simuler une partie de Secret Hitler jouée par des agents (plusieurs agents clients et un client serveur), sans intervention externe.
+Par cette simulation de partie de jeu, nous cherchons à modéliser des comportements réalistes de joueurs en créant des agents faisant leurs propres choix en fonction des actions des autres joueurs et de leurs croyances.
 
 ### Que sommes nous sensés observer ?
 
@@ -67,21 +68,32 @@ Grâce à la simulation, nous tenterons de mettre en évidence la meilleur strat
 ## Installation et lancement du jeu
 Pour réaliser le projet "Secret Hitler", vous devez suivre ces étapes :
 1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler
-2. Entrer dans le dossier "backend" : $ cd backend  
+2. Entrer dans le dossier "back-end" : $ cd backend  
 Démarrer le back-end (et le front-end par la même occasion) :  
 Créer le module : $ go mod init main.go  
 Lancer les clients et le serveur : $ go run .  
+3. Pour visualiser le front : http://localhost:3000 (navigateur)
 
-## Architecture et code
+## Architecture
+Pour le back-end, nous avons 4 fichiers : main.go, player.go (agent client), gamemaster.go (agent serveur) et functions.go.
+Le maître de jeu organise le bon déroulement de la partie et communique aux joueurs les résultats de leurs votes tandis que les joueurs prennent des décisions en fonction de leur rôle, leur stratégie et leurs croyances (qui évoluent compte tenu des comportements des autres joueurs). Il y a aussi une partie de hasard qui réside dans les attributions des rôles puis, tout du long de la partie, dans les cartes piochées par les joueurs et qui rend chaque partie absolument unique.
+[à compléter]
 
-## Discussions (differents points à noter sur le projet)
+Pour le front-end, [à compléter]
+
+## Bilan
+
+### Points positifs
+
+### Points négatifs
+Le point influençant directement les résultats est le comportement est l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascistes doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
 
 - Méta-paramètres 
 - Intelligence des agents (comment ca impacte la simulation)
 - Developper les situations que l'on peut rencontrer (victoire probable des fascistes ou liberaux, blocage,....)
 - Niveau du code aussi
 
-Le point influençant directement les résultats est le comportement et l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascites doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
+
 
 A partir de ce point, nous avons donc pu faire ces observations : 
 
