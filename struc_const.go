@@ -54,8 +54,10 @@ type game struct {
 	investigationAvailable   bool
 	specialElectionAvailable bool
 	executionAvailable       bool
-	currentPresident         string
-	currentChancellor        string
+	currentPresident         player
+	currentChancellor        player
+	prevPresident            player
+	prevChancellor           player
 	Hitler                   string
 	website                  Website
 }
