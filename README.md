@@ -28,21 +28,31 @@ Pouvoirs Présidentiels :
 ### Tour de jeu
 
 1) Le joueur à la gauche du Président devient le nouveau candidat à la Présidence.
+
 2) Le candidat à la Présidence désigne un candidat à la Chancellerie.
+
 3) Election : Les joueurs votent OUI ou NON pour le nouveau gouvernement. Il est élu si plus de la moitié votent OUI.
 Si le NON gagne :
 Le jeton Election n'est pas sur 3 --> Nouveau tour
 Le jeton Election est sur 3 --> CHAOS
+
 4) Tant que la loi n'est pas promulguée, le Président et le Chancelier doivent rester neutre.
-- Le Président pioche 3 cartes LOIS. Il en défausse une puis donne les 2 restantes au Chancelier
+- Le Président pioche 3 cartes LOIS et les regarde. Il en défausse une puis donne les 2 restantes au Chancelier.
+- Le Chancelier regarde les cartes. Il en défausse une puis promulgue l'autre.
+Cas particuliers :
+- Si il y a déjà 5 lois fascites, le Chancelier peut utiliser son veto lorsqu'il reçoit les 2 cartes du Président. Si il est accepté par le Président, on commence un nouveau tour. Sinon la règle normale.
+- La loi octroie un pouvoir. Le Président doit l'utiliser avant de passer au tour suivant.
 
 
 ## Objectifs du projet
-Observation du simulation d'une partie de Secret joué par des agents
 
-Problématique ?
+L'objectif de notre projet est de simuler un partie de Secret-Hitler jouée par des agents, sans intervention externe.
+
+Grâce à la simulation, nous tenterons de mettre en évidence la meilleur stratégie à adopter, selon les rôles, pour jouer à Secret-Hitler.
 
 ## Installation et Lancement du jeu
+
+## Architecture et Code
 
 ## Discussions (differents points à noter sur le projet)
 
@@ -50,6 +60,10 @@ Problématique ?
 - Intelligence des agents (comment ca impacte la simulation)
 - Developper les situations que l'on peut rencontrer (victoire probable des fascistes ou liberaux, blocage,....)
 - Niveau du code aussi
+
+Le point influençant directement les résultats est le comportement et l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascites doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
+
+A partir de ce point, nous avons donc pu faire ces observations : 
 
 
 
