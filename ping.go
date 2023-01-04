@@ -200,9 +200,50 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 			} else if answer.typerequest == "enact" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], true}
+				
+				if ag.role == Fascist || ag.role == Hitler {
+					for i := range answer.cards {
+						if answer.cards[i] == "Liberal" {
+							choice = answer.cards[0]
+							fmt.Println("a")
+						} else {
+							choice = answer.cards[i]
+							fmt.Println("b")
+							break
+						}
+					}
+				} else {
+					for i := range answer.cards {
+						if answer.cards[i] == "Fascist" {
+							choice = answer.cards[0]
+						} else {
+							choice = answer.cards[i]
+							break
+						}
+					}
+				}
+
+				fmt.Println("choice", choice)
+
+				answer.cards = remove(answer.cards, choice)
+				answer.cards = append(answer.cards, choice)
+
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true}
 
 			} else if answer.typerequest == "vote" {
+
+				if (ag.role == Liberal) && (ag.currentGame.currentChancellor.name != ag.name) {
+					if choice == Fascist {
+						BeliefDown(ag, ag.currentGame.prevPresident)
+						BeliefDown(ag, ag.currentGame.prevChancellor)
+						fmt.Println(ag.beliefs)
+					} else if choice == Liberal {
+						BeliefUp(ag, ag.currentGame.prevPresident)
+						BeliefUp(ag, ag.currentGame.prevChancellor)
+						fmt.Println(ag.beliefs)
+					}
+				}
+
 				fmt.Printf("Agent %q a reçu une demande de %q pour élire %q chancelier. \n", ag.name, answer.typerequest, answer.playerpres.name)
 
 				if ag.role == Fascist || ag.role == Hitler {
@@ -217,6 +258,12 @@ func (ag *agentPlayer) Start(list_player []player) {
 					} else {
 						answer.Ja = true
 					}
+				}
+
+				if answer.Ja == true {
+					fmt.Println("Il vote Ja !")
+				} else {
+					fmt.Println("Il vote Nein !")
 				}
 
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja}
