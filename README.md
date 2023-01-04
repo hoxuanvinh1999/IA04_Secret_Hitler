@@ -6,6 +6,8 @@ GHARBI Wassim - Nathan Le Boudec - Pierre Hannart - Xuan Vinh Ho
 Secret Hitler est un jeu dramatique d'intrigues et de trahisons politiques se déroulant dans
 les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est aléatoirement et secrètement assigné à être un libéral ou un fasciste, et un joueur est Hitler. Les fascistes se coordonnent pour semer la méfiance et installer leur chef de sang froid ; les libéraux doivent trouver et arrêter Hitler avant qu'il ne soit trop tard.
 
+AJOUTER UNE IMAGE DU PLATEAU DE JEU
+
 ### Rôles
 
 5 à 6 joueurs : Les fascistes se connaissent entre eux. Mais seul Hitler sait qu'il est Hitler.
