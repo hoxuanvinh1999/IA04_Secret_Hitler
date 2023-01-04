@@ -36,11 +36,11 @@ func newGame(names []string) *game {
 	rand.Seed(time.Now().UnixNano())
 	numPlayers := len(names)
 	roles := make([]string, numPlayers)
-	for i := 0; i < numPlayers/2; i++ {
+	for i := 0; i < numPlayers/2+1; i++ {
 		roles[i] = Liberal
 	}
-	roles[numPlayers/2] = Hitler
-	for i := numPlayers/2 + 1; i < numPlayers; i++ {
+	roles[numPlayers/2+1] = Hitler
+	for i := numPlayers/2 + 2; i < numPlayers; i++ {
 		roles[i] = Fascist
 	}
 
