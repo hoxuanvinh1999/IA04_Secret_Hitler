@@ -67,10 +67,10 @@ Grâce à la simulation, nous tenterons de mettre en évidence la meilleur strat
 ## Installation et lancement du jeu
 Pour réaliser le projet "Secret Hitler", vous devez suivre ces étapes :
 1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler
-2. Entrer dans le dossier "backend" : $ cd backend
-Démarrer le back-end (et le front-end par la même occasion) :
-Créer le module : $ go mod init main.go
-Lancer les clients et le serveur : $ go run .
+2. Entrer dans le dossier "backend" : $ cd backend  
+Démarrer le back-end (et le front-end par la même occasion) :  
+Créer le module : $ go mod init main.go  
+Lancer les clients et le serveur : $ go run .  
 
 ## Architecture et code
 
