@@ -61,4 +61,6 @@ type game struct {
 	Hitler                   string
 	website                  Website
 	end                      bool
+	propChancellor           player
+	result_vote              bool
 }
