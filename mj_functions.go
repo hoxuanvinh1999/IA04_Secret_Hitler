@@ -133,9 +133,10 @@ func (g *game) enactPolicy(policy string) {
 
 	if policy == Liberal {
 		g.liberalPolicies++
+		fmt.Print("Une loi libérale a été votée.\n")
 	} else if policy == Fascist {
 		g.fascistPolicies++
-
+		fmt.Print("Une loi fasciste a été votée.\n")
 		// En fonction du nombre de lois fascistes, des actions sont possibles
 		if g.fascistPolicies == 3 {
 			// Le président peut regarder un rôle
@@ -339,7 +340,7 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 	var choice string
 	var not_choose string
 	for _, p := range g.players {
-		if g.currentPresident == p.name {
+		if chancellor.name == p.name {
 			fmt.Printf("%s, choisis une loi à adopter :", chancellor.name)
 			for _, card := range cards {
 				fmt.Printf(" %s", card)
