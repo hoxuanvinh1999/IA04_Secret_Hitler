@@ -2,11 +2,37 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"math/rand"
+	"net/http"
 	"time"
 )
 
 func newGame(names []string) *game {
+
+	website := Website{"Secret Hitler", time.Now().Format(time.Stamp),
+		[]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"},
+		[]string{"Liberal", "Liberal", "Liberal", "Liberal", "Liberal", "Liberal"},
+		[]string{"true", "true", "true", "true", "true", "true"},
+		[]string{"_", "_", "_", "_", "_"},
+		[]string{"_", "_", "_", "_", "_", "_"},
+		"_",
+		"_",
+	}
+	template := template.Must(template.ParseFiles("web/main.html"))
+	go func() {
+		http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			if game_title := r.FormValue("white_background"); game_title != "" {
+				website.Game_title = game_title
+			}
+			if err := template.ExecuteTemplate(w, "main.html", website); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		})
+		fmt.Println(http.ListenAndServe(":8000", nil))
+	}()
+
 	rand.Seed(time.Now().UnixNano())
 	numPlayers := len(names)
 	roles := make([]string, numPlayers)
@@ -29,6 +55,9 @@ func newGame(names []string) *game {
 			role:  roles[i],
 			alive: true,
 		}
+		website.Players_name[i] = names[i]
+		website.Players_side[i] = roles[i]
+		website.Players_alive[i] = "true"
 	}
 
 	deck := make([]string, 17)
@@ -47,6 +76,7 @@ func newGame(names []string) *game {
 		deck:    deck,
 		discard: make([]string, 0),
 		logs:    make([]string, 0),
+		website: website,
 	}
 }
 
@@ -125,8 +155,8 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	nb_Ja := 0
 	nb_Nein := 0
 	for _, p := range g.players {
-		fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, president.name)
-		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, president, []string{"Liberal"}, true}
+		fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, chancellor.name)
+		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true}
 		answer := <-g.c
 		if answer.Ja {
 			nb_Ja += 1
@@ -152,6 +182,33 @@ func (g *game) selectPresident() player {
 			}
 		}
 	}
+
+	// go func() {
+	// 	website := Website{"Secret Hitler", time.Now().Format(time.Stamp),
+	// 		g.website.Players_name,
+	// 		g.website.Players_side,
+	// 		g.website.Players_alive,
+	// 		[]string{"_", "_", "_", "_", "_"},
+	// 		[]string{"_", "_", "_", "_", "_", "_"},
+	// 		g.website.Current_President,
+	// 		g.website.Current_President,
+	// 	}
+	// 	template := template.Must(template.ParseFiles("web/main.html"))
+	// 	go func() {
+	// 		http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	// 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 			if game_title := r.FormValue("white_background"); game_title != "" {
+	// 				website.Game_title = game_title
+	// 			}
+	// 			if err := template.ExecuteTemplate(w, "main.html", website); err != nil {
+	// 				http.Error(w, err.Error(), http.StatusInternalServerError)
+	// 			}
+	// 		})
+	// 		fmt.Println(http.ListenAndServe(":8001", nil))
+	// 	}()
+
+	// }()
+
 	g.currentPresident = nextPresident.name
 	return nextPresident
 
@@ -326,6 +383,7 @@ func (g *game) printResult() {
 	fmt.Println("Score final")
 	fmt.Println("Lois libérales : ", g.liberalPolicies)
 	fmt.Println("Lois fascistes : ", g.fascistPolicies)
+
 }
 
 // Enleve elements d'un slice
