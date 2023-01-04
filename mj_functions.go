@@ -148,9 +148,16 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	if nb_Ja > nb_Nein {
 		fmt.Println("Le résultat de l'élection est JA !")
 		g.result_vote = true
+		g.nombre_echec = 0
 	} else {
 		fmt.Println("Le résultat de l'élection est NEIN !")
 		g.result_vote = false
+		g.nombre_echec++
+		if g.nombre_echec >= 3 {
+			g.chaos = true
+			g.nombre_echec = 0
+		}
+
 	}
 
 	return nb_Ja > nb_Nein
@@ -416,7 +423,22 @@ func (g *game) start() { //ag *agentMJ
 				message := "2" + strconv.Itoa(i) + "alive"
 				conn.WriteMessage(websocket.TextMessage, []byte(message))
 			}
+
+			time.Sleep(200 * time.Millisecond)
+			message_candidat := "7" + g.propChancellor.name
+			conn.WriteMessage(websocket.TextMessage, []byte(message_candidat))
 			for i := 0; i < 1000; i++ {
+				time.Sleep(200 * time.Millisecond)
+				message_candidat := "7" + g.propChancellor.name
+				conn.WriteMessage(websocket.TextMessage, []byte(message_candidat))
+				time.Sleep(200 * time.Millisecond)
+				if g.result_vote {
+					message_result := "8" + "Ja"
+					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
+				} else {
+					message_result := "8" + "Nein"
+					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
+				}
 				time.Sleep(200 * time.Millisecond)
 				message_president := "3" + g.currentPresident.name
 				conn.WriteMessage(websocket.TextMessage, []byte(message_president))
@@ -501,7 +523,13 @@ func (g *game) start() { //ag *agentMJ
 				// On ajoute la carte choisit
 				g.enactPolicy(enacted)
 			}
+			if g.chaos {
+				fmt.Print("C'est le chaos !!")
+				card := g.drawCards(1)
+				g.enactPolicy(card[0])
+				g.chaos = false
 
+			}
 			if g.isGameOver() {
 				break
 			}
