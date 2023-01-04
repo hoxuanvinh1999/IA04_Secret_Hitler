@@ -84,13 +84,10 @@ Pour le front-end, [à compléter]
 ## Bilan
 
 ### Points positifs
-1. La possibilité de faire varier des méta-paramètres tels que la stratégie adoptée par un joueur.
-2.
+1. Permet de suivre une partie de A à Z étape par étape et ainsi d'apprendre les règles du jeu très vite ou bien de décortiquer si l'on veut aller plus loin dans l'analyse de jeu.
+2. La possibilité de faire varier des méta-paramètres tels que la stratégie adoptée par un joueur où la possibilité de connaître ou non les rôles des joueurs dès le début.
+3. Permet de cerner les comportements typiques dans un jeu de déduction sociale.
 
 ### Points négatifs
 1. Seule la version où les fascistes se connaissent entre eux et où seul Hitler sait qu'il est Hitler a été implémentée. Également, les règles spéciales n'ont pas été implémentées.
 2. Le point influençant directement les résultats est le comportement est l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascistes doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
-
-
-
-
