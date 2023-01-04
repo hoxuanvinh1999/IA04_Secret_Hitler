@@ -12,6 +12,8 @@ var c chan voteRequest
 var player_vide = player{"rien", "rien", false, "rien", c}
 var choice = ""
 
+var game_vide = newGame([]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"})
+
 type Request struct {
 	typerequest string
 	senderID    string
@@ -28,6 +30,7 @@ type voteRequest struct {
 	playerpres  player
 	cards       []string
 	Ja          bool
+	game        *game
 }
 
 type Agent interface {
@@ -100,19 +103,19 @@ type PongAgent struct {
 }
 
 func (ag PongAgent) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
 }
 
 func (ag PongAgent) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
 }
 
 func (g *game) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
 }
 
 func (g *game) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
 }
 
 func NewPongAgent(id string, c chan voteRequest) *PongAgent {
@@ -159,7 +162,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 				fmt.Printf("Je vais choisir un chancelier.\n")
 				for _, p := range list_player {
 					if ag.role == Fascist || ag.role == Hitler {
-						if (p.role == Fascist || p.role == Hitler) && (ag.name != p.name) {
+						if (p.role == Fascist || p.role == Hitler) && (ag.name != p.name) && (p.name != answer.game.currentChancellor.name) {
 							player_vide = p
 							break
 						}
@@ -169,7 +172,14 @@ func (ag *agentPlayer) Start(list_player []player) {
 						}
 					}
 				}
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true}
+				if player_vide == answer.game.currentChancellor {
+					for _, p := range list_player {
+						if player_vide != p {
+							player_vide = p
+						}
+					}
+				}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true, game_vide}
 
 				//answer := <-ag.cin
 			} else if answer.typerequest == "choisisdiscards" {
@@ -196,11 +206,11 @@ func (ag *agentPlayer) Start(list_player []player) {
 				answer.cards = remove(answer.cards, choice)
 				answer.cards = append(answer.cards, choice)
 
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide}
 
 			} else if answer.typerequest == "enact" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
-				
+
 				if ag.role == Fascist || ag.role == Hitler {
 					for i := range answer.cards {
 						if answer.cards[i] == "Liberal" {
@@ -228,7 +238,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 				answer.cards = remove(answer.cards, choice)
 				answer.cards = append(answer.cards, choice)
 
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide}
 
 			} else if answer.typerequest == "vote" {
 
@@ -260,13 +270,13 @@ func (ag *agentPlayer) Start(list_player []player) {
 					}
 				}
 
-				if answer.Ja == true {
+				if answer.Ja {
 					fmt.Println("Il vote Ja !")
 				} else {
 					fmt.Println("Il vote Nein !")
 				}
 
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide}
 
 			} else {
 				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
