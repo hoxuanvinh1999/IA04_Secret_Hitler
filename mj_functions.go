@@ -361,15 +361,19 @@ func (g *game) printResult() {
 	if g.liberalVictory() {
 		if !g.hitlerIsAlive() {
 			fmt.Println("Hitler est mort, les libéraux ont gagné ! ")
+			g.result_game = "Hitler est mort, les libéraux ont gagné ! "
 		} else {
 			fmt.Println("5 lois libérales ont été votées, les libéraux ont gagné ! ")
+			g.result_game = "5 lois libérales ont été votées, les libéraux ont gagné ! "
 		}
 	} else if g.fascistVictory() {
 		if g.hitlerWasElected() {
 			fmt.Printf("%s, qui était Hitler, a été élu. Les fascistes ont gagné !", g.Hitler)
 			fmt.Println()
+			g.result_game = g.Hitler + " , qui était Hitler, a été élu. Les fascistes ont gagné !"
 		} else {
 			fmt.Println("6 lois fascistes ont été votées, les fascistes ont gagné !")
+			g.result_game = "6 lois fascistes ont été votées, les fascistes ont gagné !"
 		}
 	} else {
 		fmt.Println("Bug/égalité ?")
