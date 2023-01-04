@@ -134,7 +134,7 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	nb_Nein := 0
 	for _, p := range g.players {
 		fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, chancellor.name)
-		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true}
+		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide}
 		answer := <-g.c
 		if answer.Ja {
 			nb_Ja += 1
@@ -260,7 +260,7 @@ func (g *game) presidentDiscards(president player, cards []string) ([]string, []
 			}
 			fmt.Println()
 
-			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards, true}
+			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide}
 			answer := <-g.c
 
 			choice = answer.cards[2]
@@ -331,7 +331,7 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 			}
 			fmt.Println()
 
-			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards, true}
+			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide}
 			answer := <-g.c
 
 			choice = answer.cards[1]
@@ -467,7 +467,7 @@ func (g *game) start() { //ag *agentMJ
 
 			for _, p := range g.players {
 				if g.currentPresident.name == p.name {
-					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}, true}
+					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}, true, game_vide}
 
 					//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
 				}
