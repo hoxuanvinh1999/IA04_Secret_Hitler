@@ -2,36 +2,16 @@ package main
 
 import (
 	"fmt"
-	"html/template"
+	"log"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 func newGame(names []string) *game {
-
-	website := Website{"Secret Hitler", time.Now().Format(time.Stamp),
-		[]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"},
-		[]string{"Liberal", "Liberal", "Liberal", "Liberal", "Liberal", "Liberal"},
-		[]string{"true", "true", "true", "true", "true", "true"},
-		[]string{"_", "_", "_", "_", "_"},
-		[]string{"_", "_", "_", "_", "_", "_"},
-		"_",
-		"_",
-	}
-	template := template.Must(template.ParseFiles("web/main.html"))
-	go func() {
-		http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			if game_title := r.FormValue("white_background"); game_title != "" {
-				website.Game_title = game_title
-			}
-			if err := template.ExecuteTemplate(w, "main.html", website); err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-			}
-		})
-		fmt.Println(http.ListenAndServe(":8000", nil))
-	}()
 
 	rand.Seed(time.Now().UnixNano())
 	numPlayers := len(names)
@@ -55,9 +35,6 @@ func newGame(names []string) *game {
 			role:  roles[i],
 			alive: true,
 		}
-		website.Players_name[i] = names[i]
-		website.Players_side[i] = roles[i]
-		website.Players_alive[i] = "true"
 	}
 
 	deck := make([]string, 17)
@@ -71,13 +48,13 @@ func newGame(names []string) *game {
 		deck[i], deck[j] = deck[j], deck[i]
 	})
 
-	return &game{
+	result := &game{
 		players: players,
 		deck:    deck,
 		discard: make([]string, 0),
 		logs:    make([]string, 0),
-		website: website,
 	}
+	return result
 }
 
 func (g *game) isGameOver() bool {
@@ -409,6 +386,63 @@ func remove(slice []string, elems ...string) []string {
 }
 
 func (g *game) start() { //ag *agentMJ
+
+	upgrader := websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+	go func() {
+		http.HandleFunc("/websoc", func(w http.ResponseWriter, r *http.Request) {
+			conn, err := upgrader.Upgrade(w, r, nil)
+			if err != nil {
+				log.Print("upgrade:", err)
+			}
+			defer conn.Close()
+			for i := 0; i < len(g.players); i++ {
+				time.Sleep(200 * time.Millisecond)
+				message := "0" + strconv.Itoa(i) + g.players[i].name
+				conn.WriteMessage(websocket.TextMessage, []byte(message))
+			}
+			for i := 0; i < len(g.players); i++ {
+				time.Sleep(200 * time.Millisecond)
+				message := "1" + strconv.Itoa(i) + g.players[i].role
+				conn.WriteMessage(websocket.TextMessage, []byte(message))
+			}
+			for i := 0; i < len(g.players); i++ {
+				time.Sleep(200 * time.Millisecond)
+				message := "2" + strconv.Itoa(i) + "alive"
+				conn.WriteMessage(websocket.TextMessage, []byte(message))
+			}
+			for i := 0; i < 1000; i++ {
+				time.Sleep(200 * time.Millisecond)
+				message_president := "3" + g.currentPresident.name
+				conn.WriteMessage(websocket.TextMessage, []byte(message_president))
+				message_chancellor := "4" + g.currentChancellor.name
+				conn.WriteMessage(websocket.TextMessage, []byte(message_chancellor))
+				time.Sleep(200 * time.Millisecond)
+				if g.liberalPolicies > 0 {
+					message_board_liberal := "5" + strconv.Itoa(g.liberalPolicies)
+					conn.WriteMessage(websocket.TextMessage, []byte(message_board_liberal))
+				}
+				time.Sleep(200 * time.Millisecond)
+				if g.fascistPolicies > 0 {
+					message_board_fascist := "6" + strconv.Itoa(g.fascistPolicies)
+					conn.WriteMessage(websocket.TextMessage, []byte(message_board_fascist))
+				}
+				// for i := 0; i < len(g.players); i++ {
+				// 	time.Sleep(200 * time.Millisecond)
+				// 	if !g.players[i].alive {
+				// 		message := "2" + strconv.Itoa(i) + "dead"
+				// 		conn.WriteMessage(websocket.TextMessage, []byte(message))
+				// 	}
+				// }
+			}
+		})
+		fmt.Println("server running on port 8000")
+		log.Fatal(http.ListenAndServe(":8000", nil))
+	}()
+
 	// Qui est Hitler
 	go func() {
 		for _, p := range g.players {
