@@ -140,14 +140,19 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 			fmt.Print(p.name, " répond : ", answer.req, "\n")
 			if answer.req == "Non, bien sûr, je ne suis pas fasciste. J'agis en tant que libéral depuis le début, et je le suis." {
 				beliefplus = 1
+				g.reponse = answer.req
 			} else if answer.req == "Je ne suis pas fasciste. J'agis en tant que libéral depuis le début." {
 				beliefplus = 0.5
+				g.reponse = answer.req
 			} else if answer.req == "Je ne suis pas fasciste." {
 				beliefplus = 0
+				g.reponse = answer.req
 			} else if answer.req == "Euh... Non, non, je suis bien libéral" {
 				beliefplus = -0.5
+				g.reponse = answer.req
 			} else if answer.req == "Euh... Mais quoi... Pourquoi vous me soupçounnez toujours, ce n'est pas juste, j'en ai marre de ce jeu !!" {
 				beliefplus = -1
+				g.reponse = answer.req
 			}
 		}
 	}
