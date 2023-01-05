@@ -1,5 +1,5 @@
 # IA04 - Secret Hitler
-GHARBI Wassim - Nathan Le Boudec - Pierre Hannart - Xuan Vinh Ho
+Composition du groupe : Gharbi Wassim - Pierre Hannart - Xuan Vinh Ho - Nathan Le Boudec
 
 ## Présentation du jeu
 Secret Hitler est un jeu à rôle secret (à l'instar du Loup Garou) dramatique d'intrigues et de trahisons politiques se déroulant dans les années 1930 en Allemagne. Avant de lancer la partie, chaque joueur est aléatoirement et secrètement assigné à être un libéral ou un fasciste, et un joueur est Hitler. Les fascistes se coordonnent pour semer la méfiance et installer leur chef de sang froid ; les libéraux doivent trouver et arrêter Hitler avant qu'il ne soit trop tard.
