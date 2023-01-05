@@ -132,9 +132,35 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	// Vote d'approbation pour le président ("Ja" ou "Nein")
 	nb_Ja := 0
 	nb_Nein := 0
+	beliefplus := 0.0
 	for _, p := range g.players {
+		if p.name == chancellor.name {
+			g.c_to_agent[p.name] <- voteRequest{"question", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide, 0}
+			answer := <-g.c
+			fmt.Print(p.name, " répond : ", answer.req, "\n")
+			if answer.req == "Non, bien sûr, je ne suis pas fasciste. J'agis en tant que libéral depuis le début, et je le suis." {
+				beliefplus = 1
+			} else if answer.req == "Je ne suis pas fasciste. J'agis en tant que libéral depuis le début." {
+				beliefplus = 0.5
+			} else if answer.req == "Je ne suis pas fasciste." {
+				beliefplus = 0
+			} else if answer.req == "Euh... Non, non, je suis bien libéral" {
+				beliefplus = -0.5
+			} else if answer.req == "Euh... Mais quoi... Pourquoi vous me soupçounnez toujours, ce n'est pas juste, j'en ai marre de ce jeu !!" {
+				beliefplus = -1
+			}
+		}
+	}
+
+	for _, p := range g.players {
+		g.c_to_agent[p.name] <- voteRequest{"reponse", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide, beliefplus}
+	}
+
+	for _, p := range g.players {
+
 		fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, chancellor.name)
-		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide}
+
+		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide, 0}
 		answer := <-g.c
 		if answer.Ja {
 			nb_Ja += 1
@@ -148,7 +174,7 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	if nb_Ja > nb_Nein {
 		fmt.Println("Le résultat de l'élection est JA !")
 		g.result_vote = true
-		g.nombre_echec = 0
+		//g.nombre_echec = 0
 	} else {
 		fmt.Println("Le résultat de l'élection est NEIN !")
 		g.result_vote = false
@@ -269,7 +295,7 @@ func (g *game) presidentDiscards(president player, cards []string) ([]string, []
 			}
 			fmt.Println()
 
-			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide}
+			g.c_to_agent[p.name] <- voteRequest{"choisisdiscards", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide, 0}
 			answer := <-g.c
 
 			choice = answer.cards[2]
@@ -340,7 +366,7 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 			}
 			fmt.Println()
 
-			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide}
+			g.c_to_agent[p.name] <- voteRequest{"enact", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide, 0}
 			answer := <-g.c
 
 			choice = answer.cards[1]
@@ -458,6 +484,25 @@ func (g *game) start() { //ag *agentMJ
 					message_board_fascist := "6" + strconv.Itoa(g.fascistPolicies)
 					conn.WriteMessage(websocket.TextMessage, []byte(message_board_fascist))
 				}
+
+				time.Sleep(200 * time.Millisecond)
+				// for i := 0; i < len(g.players); i++ {
+				// 	time.Sleep(200 * time.Millisecond)
+				// 	if !g.players[i].alive {
+				// 		message := "2" + strconv.Itoa(i) + "dead"
+				// 		conn.WriteMessage(websocket.TextMessage, []byte(message))
+				// 	}
+				// }
+				if g.result_game != "jeu en cours" {
+					message_result := "9" + g.result_game
+					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
+				}
+
+				time.Sleep(200 * time.Millisecond)
+				if g.chaos {
+					message_result := "9le vote a échoué trois fois, c'est le chaos"
+					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
+				}
 				// for i := 0; i < len(g.players); i++ {
 				// 	time.Sleep(200 * time.Millisecond)
 				// 	if !g.players[i].alive {
@@ -495,7 +540,7 @@ func (g *game) start() { //ag *agentMJ
 
 			for _, p := range g.players {
 				if g.currentPresident.name == p.name {
-					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}, true, game_vide}
+					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}, true, game_vide, 0}
 
 					//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
 				}
@@ -542,7 +587,6 @@ func (g *game) start() { //ag *agentMJ
 				fmt.Println("gov voted out")
 				president = g.selectPresident()
 			}
-
 		}
 
 		g.printResult()
