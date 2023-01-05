@@ -69,7 +69,7 @@ Grâce à la simulation, nous tenterons de mettre en évidence la meilleur strat
 ## Installation et lancement du jeu
 Pour exécuter le projet "Secret Hitler", vous devez suivre ces étapes :
 1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler --branch Branche_de_travail_Nathan
-2. Entrer dans le dossier "ia04-secret-hitler" : $ cd ia04-secret-hitler/  
+2. Entrer dans le dossier "ia04-secret-hitler" : $ cd ia04-secret-hitler/
 Créer le module : $ go mod init ia04-secret-hitler
 3. Ajouter le package go gorilla/websocket : $ go run .go get github.com/gorilla/websocket
 4. Lancer les clients et le serveur : $ go run .  
@@ -82,7 +82,7 @@ Le maître de jeu organise le bon déroulement de la partie et communique aux jo
 
 Le fichier main.go lance une nouvelle partie avec un certain nombre de joueurs et leurs prénoms, fait en sorte que les joueurs fascistes se reconnaissent puis lance les agents joueurs (fonction Start du fichier agent_player.go).
 
-Le fichier agent_player.go contient les fonctions permettant de créer et lancer les agents joueurs, de recevoir les informations transmises par le maître de jeu (cartes tirées, résultats d'élections, etc.) ainsi que transmettre des informations au maître de jeu ou à d'autres joueurs (proposition d'un chancelier, votes, questions, etc.)
+Le fichier agent_player.go contient les fonctions permettant de créer et lancer les agents joueurs, de recevoir les informations transmises par le maître de jeu (cartes tirées, résultats d'élections, etc.) ainsi que transmettre des informations au maître de jeu (proposition d'un chancelier, votes, questions, etc.)
 
 Le fichier game_master.go contient les fonctions permettant de créer et lancer le serveur, communiquer avec les agents clients (voir ci-dessus) ainsi que définir toutes les règles du jeu, gérer les piles de cartes ainsi que communiquer avec le front-end.
 
