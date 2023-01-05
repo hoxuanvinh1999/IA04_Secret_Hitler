@@ -500,8 +500,13 @@ func (g *game) start() { //ag *agentMJ
 
 				time.Sleep(200 * time.Millisecond)
 				if g.chaos {
-					message_result := "9le vote a échoué trois fois, c'est le chaos"
+					message_result := "xle vote a échoué trois fois, c'est le chaos"
 					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
+					g.chaos = false
+				} else if !g.chaos {
+					message_result := "z"
+					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
+					g.chaos = false
 				}
 				// for i := 0; i < len(g.players); i++ {
 				// 	time.Sleep(200 * time.Millisecond)
@@ -576,7 +581,7 @@ func (g *game) start() { //ag *agentMJ
 				fmt.Print("C'est le chaos !!")
 				card := g.drawCards(1)
 				g.enactPolicy(card[0])
-				g.chaos = false
+				// g.chaos = false
 
 			}
 			if g.isGameOver() {
