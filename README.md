@@ -88,9 +88,12 @@ Lien vers les [WebSocket](https://github.com/gorilla/websocket).
 
 ### Points positifs
 1. Permet de suivre une partie de A à Z étape par étape et ainsi d'apprendre les règles du jeu très vite ou bien de décortiquer si l'on veut aller plus loin dans l'analyse de jeu.
-2. La possibilité de faire varier des méta-paramètres tels que la stratégie adoptée par un joueur où la possibilité de connaître ou non les rôles des joueurs dès le début.
-3. Permet de cerner les comportements typiques dans un jeu de déduction sociale.
+2. Les agents sont cohérents dans leurs prises de décisions.
+3. Utilisation de méta paramètres pour faire varier les profils des joueurs.
+4. Permet de cerner les comportements typiques dans un jeu de déduction sociale.
 
 ### Points négatifs
-1. Seule la version où les fascistes se connaissent entre eux et où seul Hitler sait qu'il est Hitler a été implémentée. Également, les règles spéciales n'ont pas été implémentées.
+1. Le raisonnement des agents pourrait être améliorée en utilisant notamment les probabilités d'apparition des cartes dans le deck.
 2. Le point influençant directement les résultats est le comportement est l'intelligence de jeu des agents. En effet, le jeu repose normalement beaucoup sur le débat entre les joueurs et la déduction. Par exemple, les fascistes doivent mentir correctement sans incohérence tandis que les libéraux doivent déceler chaque indice. La manière de jouer, qui a été implémentée, reste donc basique.
+3. Les joueurs communiquent seulement au moment du vote. Dans une partie, les échanges sont en permanence.
+4. Dans ce genre de société, les affinités entre les agents peuvent entre en compte, il aurait été intéressant de les modéliser.
