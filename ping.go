@@ -16,13 +16,6 @@ var choice = ""
 
 var game_vide = newGame([]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"})
 
-type Request struct {
-	typerequest string
-	senderID    string
-	req         string
-	c           chan Request
-}
-
 type voteRequest struct {
 	typerequest string
 	senderID    string
@@ -40,50 +33,6 @@ type Agent interface {
 	Start()
 }
 
-type roleSend struct {
-	role string
-	c    chan string
-}
-
-type playerRequestToMj struct {
-	playerToMj playerToMj
-	senderID   string
-	req        string
-	c          chan string
-}
-
-type playerToMj struct {
-	type_request       string //["prop_gov", "presidentdiscards", "chancellor_enact", "vote"]
-	prop_gov           player
-	president_discards string
-	chancellor_enact   string
-	vote               bool
-}
-
-type mjRequestToPlayer struct {
-	mjToPlayer mjToPlayer
-	senderID   string
-	req        string
-	c          chan string
-}
-
-type mjToPlayer struct {
-	type_request       string //["prop_gov", "presidentdiscards", "chancellor_enact", "vote"]
-	president_discards [3]string
-	chancellor_enact   [2]string
-	vote               player
-}
-
-type mjInformPlayer struct {
-	liberalPolicies          int
-	fascistPolicies          int
-	investigationAvailable   bool
-	specialElectionAvailable bool
-	executionAvailable       bool
-	currentPresident         string
-	currentChancellor        string
-}
-
 type agentPlayer struct {
 	name         string
 	role         string
@@ -95,55 +44,6 @@ type agentPlayer struct {
 	currentGame  *game
 	menteur      float64
 	perspicacite float64
-}
-
-type agentMJ struct {
-	cin  chan Request
-	cout chan Request
-}
-
-type PongAgent struct {
-	ID string
-	c  chan voteRequest
-}
-
-func (ag PongAgent) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
-}
-
-func (ag PongAgent) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
-}
-
-func (g *game) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
-}
-
-func (g *game) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
-}
-
-func NewPongAgent(id string, c chan voteRequest) *PongAgent {
-	return &PongAgent{id, c}
-}
-
-func NewMJAgent(id string, c chan voteRequest) *PongAgent {
-	return &PongAgent{id, c}
-}
-
-func (ag *PongAgent) Start() {
-	go func() {
-		for {
-			req := <-ag.c
-			fmt.Printf("agent %q has received %q from %q %q\n", ag.ID,
-				req.req, req.senderID, req.typerequest)
-
-			if req.typerequest == "vote" {
-				fmt.Println("et c'est un vote")
-			}
-			go ag.handlePing(req) // et si on enlève go ?
-		}
-	}()
 }
 
 func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game, menteur float64, perspicacite float64) *agentPlayer {
@@ -290,41 +190,19 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 			} else if answer.typerequest == "vote" {
 
-				fmt.Print(ag)
+				//fmt.Print(ag)
 				if (ag.role == Liberal) && (ag.currentGame.currentChancellor.name != ag.name) {
 					if choice == Fascist {
 						BeliefDown(ag, ag.currentGame.prevPresident)
 						BeliefDown(ag, ag.currentGame.prevChancellor)
-						fmt.Println(ag.beliefs)
+						//fmt.Println(ag.beliefs)
 					} else if choice == Liberal {
 						BeliefUp(ag, ag.currentGame.prevPresident)
 						BeliefUp(ag, ag.currentGame.prevChancellor)
-						fmt.Println(ag.beliefs)
+						//fmt.Println(ag.beliefs)
 					}
 
 				}
-
-				// fmt.Print("ag.name et answer.playerpres.name", ag.name, answer.playerpres.name)
-
-				// if ag.name == answer.playerpres.name {
-				// 	fmt.Print("ag.name == answer.game.propChancellor.name")
-				// 	for i := 0; i < len(answer.game.players)-1; i++ {
-				// 		question := <-ag.cin
-				// 		fmt.Printf("Le prop chancellor a recu qqch")
-				// 		answer.game.c_to_agent[question.senderID] <- voteRequest{"reponse", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide}
-
-				// 	}
-				// }
-
-				// for _, p := range answer.game.players {
-				// 	if answer.playerpres.name == p.name {
-				// 		answer.game.c_to_agent[p.name] <- voteRequest{"question", "MJ", "MJ", PingString, answer.game.c, p, []string{}, true, game_vide}
-				// 		reponse := <-ag.cin
-				// 		fmt.Print("Voici la reponse : ", reponse)
-				// 		//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
-				// 	}
-				// 	time.Sleep(200 * time.Millisecond)
-				// }
 
 				fmt.Printf("Agent %q a reçu une demande de %q pour élire %q chancelier. \n", ag.name, answer.typerequest, answer.playerpres.name)
 
@@ -408,17 +286,3 @@ func (ag *agentPlayer) Start(list_player []player) {
 		}
 	}()
 }
-
-// func main() {
-// 	c := make(chan Request)
-// 	ponger := NewPongAgent("ponger", c)
-// 	ponger.Start()
-// 	name := []string{"Vinh", "Wassim", "Pierre", "Sylvain", "Nathan"}
-// 	role := []string{Liberal, Fascist, Liberal, Hitler, Liberal}
-// 	for i := 0; i < 5; i++ {
-// 		//id := fmt.Sprintf("pinger n°%d", i)
-// 		pinger := NewAgentPlayer(name[i], c, role[i], true, Liberal)
-// 		pinger.Start()
-// 	}
-// 	time.Sleep(time.Minute)
-// }
