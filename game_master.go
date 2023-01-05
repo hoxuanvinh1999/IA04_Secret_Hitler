@@ -87,10 +87,12 @@ func (g *game) hitlerWasElected() bool {
 	return check
 }
 
+//Vrai si les fascistes ont gagné
 func (g *game) fascistVictory() bool {
 	return (g.hitlerIsAlive() && g.hitlerWasElected() && g.fascistPolicies >= 3) || (g.fascistPolicies == 6)
 }
 
+//Fonction pour piocher
 func (g *game) drawCards(num int) []string {
 	cards := make([]string, num)
 	for i := 0; i < num; i++ {
@@ -106,6 +108,7 @@ func (g *game) drawCards(num int) []string {
 	return cards
 }
 
+//Fonction pour promulguer une loi
 func (g *game) enactPolicy(policy string) {
 
 	if policy == Liberal {
@@ -196,6 +199,7 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	return nb_Ja > nb_Nein
 }
 
+//Choisit le président (voisin de gauche du dernier président)
 func (g *game) selectPresident() player {
 	nextPresident := player{}
 	if g.currentPresident.name == "" {
@@ -227,6 +231,7 @@ func (g *game) selectChancellor(president player, chancelier player) player {
 	return choice
 }
 
+//Défausser des cartes
 func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
 	var choice string
 	for _, p := range g.players {
@@ -279,6 +284,7 @@ func (g *game) reshuffle() {
 	g.discard = make([]string, 0)
 }
 
+//Envoie une requête au chancelier pour qu'il choisisse
 func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (string, string) {
 	var choice string
 	var not_choose string
@@ -306,7 +312,7 @@ func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (s
 	return choice, not_choose
 
 }
-
+//Affiche les résultats
 func (g *game) printResult() {
 	if g.liberalVictory() {
 		if !g.hitlerIsAlive() {
@@ -482,6 +488,7 @@ func (g *game) start() { //ag *agentMJ
 			// Choix du president pour ce tour
 			president := g.selectPresident()
 
+			//Envoie au président de choisir un chancelier
 			for _, p := range g.players {
 				if g.currentPresident.name == p.name {
 					g.c_to_agent[p.name] <- voteRequest{"choisischancelier", "MJ", "MJ", PingString, g.c, p, []string{}, true, game_vide, 0}
@@ -517,6 +524,7 @@ func (g *game) start() { //ag *agentMJ
 				g.enactPolicy(enacted)
 				if g.executionAvailable {
 					g.executionAvailable = false
+					//PAN
 					fmt.Printf("\n\nPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANNNNNNNNNNNNNNNN\n\n")
 					time.Sleep(1 * time.Second)
 					for _, p := range g.players {
