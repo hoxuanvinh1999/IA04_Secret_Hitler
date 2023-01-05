@@ -174,19 +174,35 @@ func (ag *agentPlayer) Start(list_player []player) {
 				fmt.Printf("Je vais choisir un chancelier.\n")
 				for _, p := range list_player {
 					if ag.role == Fascist || ag.role == Hitler {
-						if (p.role == Fascist || p.role == Hitler) && (ag.name != p.name) && (p.name != answer.game.currentChancellor.name) {
+						if (p.role == Fascist || p.role == Hitler) && (ag.name != p.name) && (p.name != answer.game.currentChancellor.name) && (p.alive) {
 							player_vide = p
 							break
+						} else {
+							for _, q := range list_player {
+								if (ag.name != q.name) && (q.name != answer.game.currentChancellor.name) && (q.alive) {
+									player_vide = q
+									break
+								}
+							}
+
 						}
 					} else {
-						if (ag.beliefs[p] > 2) && (ag.name != p.name) {
+						if (ag.beliefs[p] > 2) && (ag.name != p.name) && (p.alive) {
 							player_vide = p
+						} else {
+							for _, q := range list_player {
+								if (ag.name != q.name) && (q.name != answer.game.currentChancellor.name) && (q.alive) {
+									player_vide = q
+									break
+								}
+							}
+
 						}
 					}
 				}
 				if player_vide == answer.game.currentChancellor {
 					for _, p := range list_player {
-						if player_vide != p {
+						if (player_vide != p) && (p.alive) {
 							player_vide = p
 						}
 					}
@@ -227,10 +243,8 @@ func (ag *agentPlayer) Start(list_player []player) {
 					for i := range answer.cards {
 						if answer.cards[i] == "Liberal" {
 							choice = answer.cards[0]
-							fmt.Println("a")
 						} else {
 							choice = answer.cards[i]
-							fmt.Println("b")
 							break
 						}
 					}
@@ -276,6 +290,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 			} else if answer.typerequest == "vote" {
 
+				fmt.Print(ag)
 				if (ag.role == Liberal) && (ag.currentGame.currentChancellor.name != ag.name) {
 					if choice == Fascist {
 						BeliefDown(ag, ag.currentGame.prevPresident)
@@ -358,6 +373,28 @@ func (ag *agentPlayer) Start(list_player []player) {
 					}
 				}
 
+			} else if answer.typerequest == "execute" {
+				if ag.role == Fascist || ag.role == Hitler {
+					minValue := math.MaxInt32
+					var agents_execute player
+					for agentss, value := range ag.beliefs {
+						if (value < minValue) && (agentss.name != ag.name) {
+							minValue = value
+							agents_execute = agentss
+						}
+					}
+					ag.cout <- voteRequest{"execute", ag.name, ag.role, PingString, ag.cin, agents_execute, answer.cards[0:1], answer.Ja, game_vide, 0}
+				} else {
+					maxValue := math.MinInt32
+					var agents_execute player
+					for agentss, value := range ag.beliefs {
+						if (value > maxValue) && (agentss.name != ag.name) {
+							maxValue = value
+							agents_execute = agentss
+						}
+					}
+					ag.cout <- voteRequest{"execute", ag.name, ag.role, PingString, ag.cin, agents_execute, answer.cards[0:1], answer.Ja, game_vide, 0}
+				}
 			} else {
 				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
 			}
