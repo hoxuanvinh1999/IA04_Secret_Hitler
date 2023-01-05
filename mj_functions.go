@@ -509,7 +509,7 @@ func (g *game) start() { //ag *agentMJ
 					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
 					g.chaos = false
 				} else if !g.chaos {
-					message_result := "z"
+					message_result := "x"
 					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
 					g.chaos = false
 				}
