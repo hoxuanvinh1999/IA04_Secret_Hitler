@@ -92,6 +92,8 @@ Le fichier struc_const.go contient des structures et constantes utilisées dans 
 Pour le front-end, nous utilisons Gorilla WebSocket, qui est une implémentation Go du protocole WebSocket. Il créera un serveur et enverra des messages au site Web toutes les 200 ms. Le Web se met à jour automatiquement et lui montre comment le jeu fonctionne. 
 Lien vers les [WebSocket](https://github.com/gorilla/websocket).
 
+Avec le serveur créé par Websocket, le reste est vraiment simple. Nous choisissons la voie simple en utilisant HTML et CSS pour le site Web. Nous utilisons ensuite Javascript pour traiter les messages qui sont envoyés par Websocket depuis Go. Le message est classé par la première lettre, Javascript traitera ces messages grâce à cela et changera le CSS. Avec cette méthode, le site Web sera modifié toutes les 200 ms car c'est l'écart entre 2 messages adjacents. Si nous l'envoyons plus rapidement ou plus lentement, certains changements du jeu peuvent être manqués.
+
 ## Détails des paramètres menteur et perspicacité
 
 Comme demandé lors de la soutenance, voici une rapide explication de l'utilisation des paramètres menteur et perspicacité.
