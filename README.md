@@ -95,7 +95,7 @@ Lien vers les [WebSocket](https://github.com/gorilla/websocket).
 ## Détails des paramètres menteur et perspicacité
 
 Comme demandé lors de la soutenance, voici une rapide explication de l'utilisation des paramètres menteur et perspicacité.
-Lorsque l'agent candidat reçoit une question, il va tirer au sort un nombre, suivant une loi normale $N(ag.menteur,1)$. En fonction de ce nombre, sa réponse sera plus ou moins suspecte.
+Lorsque l'agent candidat reçoit une question, il va tirer au sort un nombre, suivant une loi normale N(ag.menteur,1). En fonction de ce nombre, sa réponse sera plus ou moins suspecte.
 Les autres agents vont ensuite être informés de cette réponse. Chaque agent va ensuite tirer au sort un nombre, suivant une loi normale N(ag.perspicacité,0.5). En fonction de cette valeur, il décèlera ou non si la réponse est suspecte, et à quel point elle l'est.
 Les réalisations des variables aléatoires sont calculées à l'aide de cette fonction (merci RO05) :
 
