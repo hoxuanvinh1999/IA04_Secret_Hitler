@@ -92,6 +92,14 @@ Le fichier struc_const.go contient des structures et constantes utilisées dans 
 Pour le front-end, nous utilisons Gorilla WebSocket, qui est une implémentation Go du protocole WebSocket. Il créera un serveur et enverra des messages au site Web toutes les 200 ms. Le Web se met à jour automatiquement et lui montre comment le jeu fonctionne. 
 Lien vers les [WebSocket](https://github.com/gorilla/websocket).
 
+## Détails des paramètres menteur et perspicacité
+
+Comme demandé lors de la soutenance, voici une rapide explication de l'utilisation des paramètres menteur et perspicacité.
+Lorsque l'agent candidat reçoit une question, il va tirer au sort un nombre, suivant une loi normale N(ag.menteur,1). En fonction de ce nombre, sa réponse sera plus ou moins suspecte.
+Les autres agents vont ensuite être informés de cette réponse. Chaque agent va ensuite tirer au sort un nombre, suivant une loi normale N(ag.perspicacité,0.5). En fonction de cette valeur, il décèlera ou non si la réponse est suspecte, et à quel point elle l'est.
+
+
+
 ## Bilan
 
 ### Points positifs
