@@ -67,15 +67,14 @@ Nous sommes sensés observer un plateau de jeu avec des joueurs (ayant des noms,
 Grâce à la simulation, nous tenterons de mettre en évidence la meilleur stratégie à adopter, selon les rôles, pour jouer (et gagner) à Secret Hitler.
 
 ## Installation et lancement du jeu
-Pour réaliser le projet "Secret Hitler", vous devez suivre ces étapes :
-1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler
-2. Entrer dans le dossier "back-end" : $ cd backend  
-Démarrer le back-end (et le front-end par la même occasion) :  
-Créer le module : $ go mod init main.go  
-3. Lancer les clients et le serveur : $ go run .  
-4. Pour visualiser le front : http://localhost:3000 (navigateur)
-5. Ouvrez le main.html et voyez le jeu se lancer automatiquement
-6. Vous pouvez recommencer à partir de l'étape 3 pour relancer le jeu 
+Pour exécuter le projet "Secret Hitler", vous devez suivre ces étapes :
+1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler --branch Branche_de_travail_Nathan
+2. Entrer dans le dossier "ia04-secret-hitler" : $ cd ia04-secret-hitler/  
+Créer le module : $ go mod init ia04-secret-hitler
+3. Ajouter le package go gorilla/websocket : $ go run .go get github.com/gorilla/websocket
+4. Lancer les clients et le serveur : $ go run .  
+5. Pour visualiser le front : ouvrez le fichier web/main.html dans votre dossier ia04-secret-hitler. Le jeu se lancera automatiquement, et vous pourrez voir les agents jouer.
+6. Vous pouvez recommencer à partir de l'étape 4 pour relancer le jeu 
 
 ## Architecture
 Pour le back-end, nous avons 4 fichiers : main.go, player.go (agent client), gamemaster.go (agent serveur) et functions.go.
