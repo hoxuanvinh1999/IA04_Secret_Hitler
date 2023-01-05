@@ -1,0 +1,78 @@
+body {
+    min-height: 150%;
+    background-image: url("/static/white_background.png");
+    background-blend-mode:  overlay;
+    background-size: cover;
+}
+
+.welcome {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+    color:lightgreen;
+}
+
+.center {
+    height: 100px;
+     display: flex;
+     justify-content: center;
+     align-items: center
+}
+
+.board {
+    border: 1px solid black;
+    margin: 1rem;
+    padding: 2rem 2rem;
+    text-align: center;
+}
+.liberal_board {
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+.fascist_board {
+    display: inline-block;
+    border: 1px solid red;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+.liberal_card{
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+.fascist_card{
+    display: inline-block;
+    border: 1px solid red;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+
+.player_board {
+    border: 1px solid black;
+    margin: 1rem;
+    padding: 2rem 2rem;
+    text-align: center;
+}
+
+.player{
+    text-align: center;
+    display: block ;
+    border: 1px solid white;
+    width: 600px; 
+    height:80px;
+    margin-top: 20px;
+}
+.player_name{
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+.player_side{
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
