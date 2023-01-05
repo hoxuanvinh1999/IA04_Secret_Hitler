@@ -85,15 +85,16 @@ type mjInformPlayer struct {
 }
 
 type agentPlayer struct {
-	name        string
-	role        string
-	alive       bool
-	vote        string
-	cin         chan voteRequest
-	cout        chan voteRequest
-	beliefs     map[player]int
-	currentGame *game
-	menteur     float64
+	name         string
+	role         string
+	alive        bool
+	vote         string
+	cin          chan voteRequest
+	cout         chan voteRequest
+	beliefs      map[player]int
+	currentGame  *game
+	menteur      float64
+	perspicacite float64
 }
 
 type agentMJ struct {
@@ -145,14 +146,14 @@ func (ag *PongAgent) Start() {
 	}()
 }
 
-func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game, menteur float64) *agentPlayer {
+func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game, menteur float64, perspicacite float64) *agentPlayer {
 	//cin := make(chan voteRequest)
 	beliefs := make(map[player]int, len(currentGame.players))
 	for i := 0; i < len(currentGame.players); i++ {
 		beliefs[currentGame.players[i]] = 3
 	}
 
-	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame, menteur}
+	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame, menteur, perspicacite}
 }
 
 func RandomNormal(mean, stdDev float64) float64 {
@@ -335,21 +336,28 @@ func (ag *agentPlayer) Start(list_player []player) {
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide, 0}
 
 			} else if answer.typerequest == "reponse" {
-				if answer.nombre == 1 {
-					BeliefUp(ag, ag.currentGame.propChancellor)
-				} else if answer.nombre == 0.5 {
-					rand_int2 := rand.Intn(2) + 1
-					if rand_int2 == 1 {
+
+				mean := ag.perspicacite
+				stdDev := 0.5
+				rand_float := RandomNormal(mean, stdDev)
+				if rand_float > 0.5 {
+					if answer.nombre == 1 {
 						BeliefUp(ag, ag.currentGame.propChancellor)
-					}
-				} else if answer.nombre == -0.5 {
-					rand_int2 := rand.Intn(2) + 1
-					if rand_int2 == 1 {
+					} else if answer.nombre == 0.5 {
+						rand_int2 := rand.Intn(2) + 1
+						if rand_int2 == 1 {
+							BeliefUp(ag, ag.currentGame.propChancellor)
+						}
+					} else if answer.nombre == -0.5 {
+						rand_int2 := rand.Intn(2) + 1
+						if rand_int2 == 1 {
+							BeliefDown(ag, ag.currentGame.propChancellor)
+						}
+					} else if answer.nombre == -1 {
 						BeliefDown(ag, ag.currentGame.propChancellor)
 					}
-				} else if answer.nombre == -1 {
-					BeliefDown(ag, ag.currentGame.propChancellor)
 				}
+
 			} else {
 				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
 			}
