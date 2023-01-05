@@ -46,6 +46,7 @@ type agentPlayer struct {
 	perspicacite float64
 }
 
+//Crée un agentPlayer
 func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game, menteur float64, perspicacite float64) *agentPlayer {
 	//cin := make(chan voteRequest)
 	beliefs := make(map[player]int, len(currentGame.players))
@@ -56,14 +57,17 @@ func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, ro
 	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame, menteur, perspicacite}
 }
 
+//Augmente la suspicion d'un agent pour un autre
 func BeliefUp(ag1 *agentPlayer, ag2 player) {
 	ag1.beliefs[ag2] += 1
 }
 
+//Diminue la suspicion d'un agent pour un autre
 func BeliefDown(ag1 *agentPlayer, ag2 player) {
 	ag1.beliefs[ag2] -= 1
 }
 
+//Vérifie que les deux sont fascistes
 func (ag1 *agentPlayer) BothFascists(ag2 player) {
 	for i := 0; i < len(ag1.currentGame.players); i++ {
 		if ag1.currentGame.players[i] == ag2 {
@@ -71,7 +75,7 @@ func (ag1 *agentPlayer) BothFascists(ag2 player) {
 		}
 	}
 }
-
+//Loi normale
 func RandomNormal(mean, stdDev float64) float64 {
 	u1 := rand.Float64()
 	u2 := rand.Float64()
@@ -84,11 +88,12 @@ func (ag *agentPlayer) Start(list_player []player) {
 		for {
 			//ag.cout <- voteRequest{"vote", ag.name, ag.role, PingString, ag.cin, player_vide}
 			answer := <-ag.cin
-
+			//Si l'agent doit choisir un chancelier
 			if answer.typerequest == "choisischancelier" {
 				fmt.Printf("agent %q has received: %q\n", ag.name, answer.typerequest)
 				fmt.Printf("Je vais choisir un chancelier.\n")
 				for _, p := range list_player {
+					//En fonction de son rôle et de ses croyances il choisit
 					if ag.role == Fascist || ag.role == Hitler {
 						if (p.role == Fascist || p.role == Hitler) && (ag.name != p.name) && (p.name != answer.game.currentChancellor.name) && (p.alive) {
 							player_vide = p
@@ -123,9 +128,11 @@ func (ag *agentPlayer) Start(list_player []player) {
 						}
 					}
 				}
+				//Répond le président qu'il porte pour candidat
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true, game_vide, 0}
 
 				//answer := <-ag.cin
+			//Si l'agent doit choisir une carte à défausser
 			} else if answer.typerequest == "choisisdiscards" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
 				if ag.role == Fascist || ag.role == Hitler {
@@ -152,6 +159,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide, 0}
 
+			//Si l'agent doit choisir une carte à promulguer
 			} else if answer.typerequest == "enact" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
 
@@ -182,6 +190,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide, 0}
 
+			//Si l'agent reçoit une question
 			} else if answer.typerequest == "question" {
 				fmt.Print(ag.name, " es-tu fasciste ? \n")
 
@@ -244,6 +253,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide, 0}
 
+			//Si le joueur reçoit une réponse à la question
 			} else if answer.typerequest == "reponse" {
 
 				mean := ag.perspicacite
@@ -267,6 +277,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 					}
 				}
 
+			//Si le joueur doit exécuter un autre
 			} else if answer.typerequest == "execute" {
 				if ag.role == Fascist || ag.role == Hitler {
 					minValue := math.MaxInt32
