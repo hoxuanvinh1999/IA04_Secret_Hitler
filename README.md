@@ -19,7 +19,7 @@ Libéraux : 5 lois libérales promulguées OU Hitler exécuté.
 Fascites : 6 lois fascistes promulguées OU Hitler élu Chancelier avec 3 lois fascistes promulguées.
 
 ### Règles spéciales
-CHAOS : 
+Chaos : 
 - La carte du dessus de la pioche LOIS est révélée et promulguée.
 - Le jeton Election est réinitialisé.
 - Un nouveau tour commence où tous les joueurs sont éligibles à devenir Chancelier.
