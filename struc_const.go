@@ -66,4 +66,5 @@ type game struct {
 	nombre_echec             int
 	chaos                    bool
 	result_game              string
+	reponse                  string
 }
