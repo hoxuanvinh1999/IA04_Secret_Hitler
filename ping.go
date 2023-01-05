@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 )
@@ -92,6 +93,7 @@ type agentPlayer struct {
 	cout        chan voteRequest
 	beliefs     map[player]int
 	currentGame *game
+	menteur     float64
 }
 
 type agentMJ struct {
@@ -143,14 +145,21 @@ func (ag *PongAgent) Start() {
 	}()
 }
 
-func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game) *agentPlayer {
+func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, role string, alive bool, vote string, currentGame *game, menteur float64) *agentPlayer {
 	//cin := make(chan voteRequest)
 	beliefs := make(map[player]int, len(currentGame.players))
 	for i := 0; i < len(currentGame.players); i++ {
 		beliefs[currentGame.players[i]] = 3
 	}
 
-	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame}
+	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame, menteur}
+}
+
+func RandomNormal(mean, stdDev float64) float64 {
+	u1 := rand.Float64()
+	u2 := rand.Float64()
+	z0 := math.Sqrt(-2*math.Log(u1)) * math.Cos(2*math.Pi*u2)
+	return z0*stdDev + mean
 }
 
 func (ag *agentPlayer) Start(list_player []player) {
@@ -244,17 +253,22 @@ func (ag *agentPlayer) Start(list_player []player) {
 
 			} else if answer.typerequest == "question" {
 				fmt.Print(ag.name, " es-tu fasciste ? \n")
-				rand_int := rand.Intn(5) + 1
+
+				mean := ag.menteur
+				stdDev := 1.0
+				rand_float := RandomNormal(mean, stdDev)
+
+				//rand_int := rand.Intn(5) + 1
 				reponse := ""
-				if rand_int == 1 {
+				if rand_float < 1 {
 					reponse = "Non, bien sûr, je ne suis pas fasciste. J'agis en tant que libéral depuis le début, et je le suis."
-				} else if rand_int == 2 {
+				} else if 1 <= rand_float && rand_float < 2 {
 					reponse = "Je ne suis pas fasciste. J'agis en tant que libéral depuis le début."
-				} else if rand_int == 3 {
+				} else if 2 <= rand_float && rand_float < 3 {
 					reponse = "Je ne suis pas fasciste."
-				} else if rand_int == 4 {
+				} else if 3 <= rand_float && rand_float < 4 {
 					reponse = "Euh... Non, non, je suis bien libéral"
-				} else if rand_int == 5 {
+				} else if 4 <= rand_float && rand_float < 5 {
 					reponse = "Euh... Mais quoi... Pourquoi vous me soupçounnez toujours, ce n'est pas juste, j'en ai marre de ce jeu !!"
 				}
 				ag.cout <- voteRequest{"reponse", ag.name, ag.role, reponse, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide, 0}
