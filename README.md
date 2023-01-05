@@ -31,7 +31,7 @@ Pouvoirs Présidentiels :
 - Exécution : Le président tue un joueur.
 
 ### Tour de jeu
-1) Le joueur à la gauche du Président devient le nouveau candidat à la Présidence.
+1) Le joueur à la gauche du Président devient le nouveau Président.
 
 2) Le candidat à la Présidence désigne un candidat à la Chancellerie.
 
@@ -43,7 +43,7 @@ Le jeton Election n'est pas sur 3 --> Nouveau tour
 
 Le jeton Election est sur 3 --> CHAOS
 
-4) Tant que la loi n'est pas promulguée, le Président et le Chancelier doivent rester neutre.
+4) Tant que la loi n'est pas promulguée, le Président et le Chancelier doivent rester neutres.
 - Le Président pioche 3 cartes LOIS et les regarde. Il en défausse une puis donne les 2 restantes au Chancelier.
 - Le Chancelier regarde les cartes. Il en défausse une puis promulgue l'autre.
 Cas particuliers :
@@ -77,9 +77,17 @@ Créer le module : $ go mod init ia04-secret-hitler
 6. Vous pouvez recommencer à partir de l'étape 4 pour relancer le jeu 
 
 ## Architecture
-Pour le back-end, nous avons 4 fichiers : main.go, player.go (agent client), gamemaster.go (agent serveur) et functions.go.
+Pour le back-end, nous avons 4 fichiers : main.go, agent_player.go (agent client), game_master.go (agent serveur) et struc_cons.go.
 Le maître de jeu organise le bon déroulement de la partie et communique aux joueurs les résultats de leurs votes tandis que les joueurs prennent des décisions en fonction de leur rôle, leur stratégie et leurs croyances (qui évoluent compte tenu des comportements des autres joueurs). Il y a aussi une partie de hasard qui réside dans les attributions des rôles puis, tout du long de la partie, dans les cartes piochées par les joueurs et qui rend chaque partie absolument unique.
-[à compléter]
+
+Le fichier main.go lance une nouvelle partie avec un certain nombre de joueurs et leurs prénoms, fait en sorte que les joueurs fascistes se reconnaissent puis lance les agents joueurs (fonction Start du fichier agent_player.go).
+
+Le fichier agent_player.go contient les fonctions permettant de créer et lancer les agents joueurs, de recevoir les informations transmises par le maître de jeu (cartes tirées, résultats d'élections, etc.) ainsi que transmettre des informations au maître de jeu ou à d'autres joueurs (proposition d'un chancelier, votes, questions, etc.)
+
+Le fichier game_master.go contient les fonctions permettant de créer et lancer le serveur, communiquer avec les agents clients (voir ci-dessus) ainsi que définir toutes les règles du jeu, gérer les piles de cartes ainsi que communiquer avec le front-end.
+
+Le fichier struc_const.go contient des structures et constantes utilisées dans les autres fichiers.
+
 
 Pour le front-end, nous utilisons Gorilla WebSocket, qui est une implémentation Go du protocole WebSocket. Il créera un serveur et enverra des messages au site Web toutes les 200 ms. Le Web se met à jour automatiquement et lui montre comment le jeu fonctionne. 
 Lien vers les [WebSocket](https://github.com/gorilla/websocket).
