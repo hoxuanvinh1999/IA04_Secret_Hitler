@@ -56,6 +56,22 @@ func NewAgentPlayer(name string, cout chan voteRequest, cin chan voteRequest, ro
 	return &agentPlayer{name, role, alive, vote, cin, cout, beliefs, currentGame, menteur, perspicacite}
 }
 
+func BeliefUp(ag1 *agentPlayer, ag2 player) {
+	ag1.beliefs[ag2] += 1
+}
+
+func BeliefDown(ag1 *agentPlayer, ag2 player) {
+	ag1.beliefs[ag2] -= 1
+}
+
+func (ag1 *agentPlayer) BothFascists(ag2 player) {
+	for i := 0; i < len(ag1.currentGame.players); i++ {
+		if ag1.currentGame.players[i] == ag2 {
+			ag1.beliefs[ag1.currentGame.players[i]] = 1
+		}
+	}
+}
+
 func RandomNormal(mean, stdDev float64) float64 {
 	u1 := rand.Float64()
 	u2 := rand.Float64()
