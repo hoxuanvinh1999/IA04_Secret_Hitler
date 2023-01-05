@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"time"
 )
 
@@ -31,6 +32,7 @@ type voteRequest struct {
 	cards       []string
 	Ja          bool
 	game        *game
+	nombre      float64
 }
 
 type Agent interface {
@@ -103,19 +105,19 @@ type PongAgent struct {
 }
 
 func (ag PongAgent) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
 }
 
 func (ag PongAgent) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
 }
 
 func (g *game) choisisPres(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
 }
 
 func (g *game) handlePing(req voteRequest) {
-	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide}
+	req.c <- voteRequest{"choisischancelier", "MJ", PingString, "MJ", req.c, player_vide, []string{}, true, game_vide, 0}
 }
 
 func NewPongAgent(id string, c chan voteRequest) *PongAgent {
@@ -179,7 +181,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 						}
 					}
 				}
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true, game_vide}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, []string{}, true, game_vide, 0}
 
 				//answer := <-ag.cin
 			} else if answer.typerequest == "choisisdiscards" {
@@ -206,7 +208,7 @@ func (ag *agentPlayer) Start(list_player []player) {
 				answer.cards = remove(answer.cards, choice)
 				answer.cards = append(answer.cards, choice)
 
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide, 0}
 
 			} else if answer.typerequest == "enact" {
 				fmt.Printf("Agent %q a reçu une demande de %q avec pour cartes : %q\n", ag.name, answer.typerequest, answer.cards)
@@ -238,7 +240,24 @@ func (ag *agentPlayer) Start(list_player []player) {
 				answer.cards = remove(answer.cards, choice)
 				answer.cards = append(answer.cards, choice)
 
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards, true, game_vide, 0}
+
+			} else if answer.typerequest == "question" {
+				fmt.Print(ag.name, " es-tu fasciste ? \n")
+				rand_int := rand.Intn(5) + 1
+				reponse := ""
+				if rand_int == 1 {
+					reponse = "Non, bien sûr, je ne suis pas fasciste. J'agis en tant que libéral depuis le début, et je le suis."
+				} else if rand_int == 2 {
+					reponse = "Je ne suis pas fasciste. J'agis en tant que libéral depuis le début."
+				} else if rand_int == 3 {
+					reponse = "Je ne suis pas fasciste."
+				} else if rand_int == 4 {
+					reponse = "Euh... Non, non, je suis bien libéral"
+				} else if rand_int == 5 {
+					reponse = "Euh... Mais quoi... Pourquoi vous me soupçounnez toujours, ce n'est pas juste, j'en ai marre de ce jeu !!"
+				}
+				ag.cout <- voteRequest{"reponse", ag.name, ag.role, reponse, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide, 0}
 
 			} else if answer.typerequest == "vote" {
 
@@ -252,7 +271,30 @@ func (ag *agentPlayer) Start(list_player []player) {
 						BeliefUp(ag, ag.currentGame.prevChancellor)
 						fmt.Println(ag.beliefs)
 					}
+
 				}
+
+				// fmt.Print("ag.name et answer.playerpres.name", ag.name, answer.playerpres.name)
+
+				// if ag.name == answer.playerpres.name {
+				// 	fmt.Print("ag.name == answer.game.propChancellor.name")
+				// 	for i := 0; i < len(answer.game.players)-1; i++ {
+				// 		question := <-ag.cin
+				// 		fmt.Printf("Le prop chancellor a recu qqch")
+				// 		answer.game.c_to_agent[question.senderID] <- voteRequest{"reponse", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide}
+
+				// 	}
+				// }
+
+				// for _, p := range answer.game.players {
+				// 	if answer.playerpres.name == p.name {
+				// 		answer.game.c_to_agent[p.name] <- voteRequest{"question", "MJ", "MJ", PingString, answer.game.c, p, []string{}, true, game_vide}
+				// 		reponse := <-ag.cin
+				// 		fmt.Print("Voici la reponse : ", reponse)
+				// 		//fmt.Printf("%q propose pour chancelier %q\n", newreq.senderID, newreq.playerpres.name)
+				// 	}
+				// 	time.Sleep(200 * time.Millisecond)
+				// }
 
 				fmt.Printf("Agent %q a reçu une demande de %q pour élire %q chancelier. \n", ag.name, answer.typerequest, answer.playerpres.name)
 
@@ -276,8 +318,24 @@ func (ag *agentPlayer) Start(list_player []player) {
 					fmt.Println("Il vote Nein !")
 				}
 
-				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide}
+				ag.cout <- voteRequest{"prop_president", ag.name, ag.role, PingString, ag.cin, player_vide, answer.cards[0:1], answer.Ja, game_vide, 0}
 
+			} else if answer.typerequest == "reponse" {
+				if answer.nombre == 1 {
+					BeliefUp(ag, ag.currentGame.propChancellor)
+				} else if answer.nombre == 0.5 {
+					rand_int2 := rand.Intn(2) + 1
+					if rand_int2 == 1 {
+						BeliefUp(ag, ag.currentGame.propChancellor)
+					}
+				} else if answer.nombre == -0.5 {
+					rand_int2 := rand.Intn(2) + 1
+					if rand_int2 == 1 {
+						BeliefDown(ag, ag.currentGame.propChancellor)
+					}
+				} else if answer.nombre == -1 {
+					BeliefDown(ag, ag.currentGame.propChancellor)
+				}
 			} else {
 				fmt.Printf("Agent %q a reçu une demande de type %q. C'est incompréhensible.\n", ag.name, answer.typerequest)
 			}
