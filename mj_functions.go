@@ -118,12 +118,13 @@ func (g *game) enactPolicy(policy string) {
 		if g.fascistPolicies == 3 {
 			// Le président peut regarder un rôle
 			g.investigationAvailable = true
+			g.executionAvailable = true
 		} else if g.fascistPolicies == 4 {
 			// Président peut déclencher une élection spéciale, et donc choisir le futur candidat à la présidence
-			g.specialElectionAvailable = true
+			g.executionAvailable = true
 		} else if g.fascistPolicies == 5 {
 			// Le président peut exécuter un joueur
-			g.executionAvailable = true
+			g.specialElectionAvailable = true
 		}
 	}
 }
@@ -162,15 +163,16 @@ func (g *game) voteOnChancellor(president, chancellor player) bool {
 	}
 
 	for _, p := range g.players {
+		if p.alive {
+			fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, chancellor.name)
 
-		fmt.Printf("%s, vote Ja ou Nein pour élire : %s \n", p.name, chancellor.name)
-
-		g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide, 0}
-		answer := <-g.c
-		if answer.Ja {
-			nb_Ja += 1
-		} else {
-			nb_Nein += 1
+			g.c_to_agent[p.name] <- voteRequest{"vote", "MJ", "MJ", PingString, g.c, chancellor, []string{"Liberal"}, true, game_vide, 0}
+			answer := <-g.c
+			if answer.Ja {
+				nb_Ja += 1
+			} else {
+				nb_Nein += 1
+			}
 		}
 
 		time.Sleep(100 * time.Millisecond)
@@ -201,7 +203,11 @@ func (g *game) selectPresident() player {
 	} else {
 		for i, p := range g.players {
 			if p.name == g.currentPresident.name {
-				nextPresident = g.players[(i+1)%len(g.players)]
+				if g.players[(i+1)%len(g.players)].alive {
+					nextPresident = g.players[(i+1)%len(g.players)]
+				} else {
+					nextPresident = g.players[(i+2)%len(g.players)]
+				}
 				break
 			}
 		}
@@ -503,7 +509,7 @@ func (g *game) start() { //ag *agentMJ
 					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
 				}
 
-				time.Sleep(200 * time.Millisecond)
+				time.Sleep(100 * time.Millisecond)
 				if g.chaos {
 					message_result := "xle vote a échoué trois fois, c'est le chaos"
 					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
@@ -513,13 +519,28 @@ func (g *game) start() { //ag *agentMJ
 					conn.WriteMessage(websocket.TextMessage, []byte(message_result))
 					g.chaos = false
 				}
-				// for i := 0; i < len(g.players); i++ {
-				// 	time.Sleep(200 * time.Millisecond)
-				// 	if !g.players[i].alive {
-				// 		message := "2" + strconv.Itoa(i) + "dead"
-				// 		conn.WriteMessage(websocket.TextMessage, []byte(message))
-				// 	}
-				// }
+
+				time.Sleep(200 * time.Millisecond)
+				for i := 0; i < len(g.players); i++ {
+					if g.propChancellor.name == g.players[i].name {
+						message_question := "q" + g.propChancellor.name + ", es-tu fasciste ?"
+						conn.WriteMessage(websocket.TextMessage, []byte(message_question))
+						message_answer := "a" + strconv.Itoa(i) + g.reponse
+						conn.WriteMessage(websocket.TextMessage, []byte(message_answer))
+						//break
+					} else {
+						message_answer := "a" + strconv.Itoa(i)
+						conn.WriteMessage(websocket.TextMessage, []byte(message_answer))
+					}
+				}
+
+				for i := 0; i < len(g.players); i++ {
+					time.Sleep(200 * time.Millisecond)
+					if !g.players[i].alive {
+						message := "2" + strconv.Itoa(i) + "dead"
+						conn.WriteMessage(websocket.TextMessage, []byte(message))
+					}
+				}
 			}
 		})
 		fmt.Println("server running on port 8000")
@@ -581,14 +602,39 @@ func (g *game) start() { //ag *agentMJ
 				g.discard = append(g.discard, not_enacted)
 				// On ajoute la carte choisit
 				g.enactPolicy(enacted)
+				if g.executionAvailable {
+					g.executionAvailable = false
+					fmt.Printf("\n\nAAHAHAKYEGKBDYZGEUYGZIEUYGIZUYEGDIUYZGEIDUYGZEIGYDZZYBDGEZYDTBGUEZYTGDUYZETGDUYGZEUD\n\n")
+					time.Sleep(1 * time.Second)
+					for _, p := range g.players {
+						if g.currentPresident.name == p.name {
+
+							fmt.Printf("%s, exécute quelqu'un ! ", president.name, "\n")
+
+							g.c_to_agent[p.name] <- voteRequest{"execute", "MJ", "MJ", PingString, g.c, p, cards, true, game_vide, 0}
+							answer := <-g.c
+							for i, p := range g.players {
+								if answer.playerpres.name == p.name {
+									g.players[i].alive = false
+									p.alive = false
+									fmt.Print(p.name, " est mort ! \n")
+								}
+							}
+						}
+						time.Sleep(200 * time.Millisecond)
+					}
+				}
 			}
+
 			if g.chaos {
 				fmt.Print("C'est le chaos !!")
 				card := g.drawCards(1)
 				g.enactPolicy(card[0])
+				president = g.selectPresident()
 				// g.chaos = false
 
 			}
+
 			if g.isGameOver() {
 				break
 			}
