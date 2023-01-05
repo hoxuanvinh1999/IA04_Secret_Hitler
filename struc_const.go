@@ -36,24 +36,24 @@ type game struct {
 	c                        chan voteRequest
 	c_to_agent               map[string]chan voteRequest
 	players                  []player
-	deck                     []string
-	discard                  []string
+	deck                     []string //Les cartes du deck
+	discard                  []string //Les cartes de la défausse
 	logs                     []string
 	liberalPolicies          int
 	fascistPolicies          int
-	investigationAvailable   bool
-	specialElectionAvailable bool
-	executionAvailable       bool
-	currentPresident         player
-	currentChancellor        player
-	prevPresident            player
-	prevChancellor           player
+	investigationAvailable   bool //Si le pouvoir d'investigation est disponible
+	specialElectionAvailable bool //Si le pouvoir d'élection spéciale est disponible
+	executionAvailable       bool //Si le pouvoir d'exécution est disponible
+	currentPresident         player //Président actuel
+	currentChancellor        player //Chancelier actuel
+	prevPresident            player //Président précédent
+	prevChancellor           player //Chancelier précédent
 	Hitler                   string
 	website                  Website
 	end                      bool
 	propChancellor           player
 	result_vote              bool
-	nombre_echec             int
+	nombre_echec             int //Nombre d'échecs de vote
 	chaos                    bool
 	result_game              string
 	reponse                  string
