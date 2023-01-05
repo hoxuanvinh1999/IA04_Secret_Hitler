@@ -213,52 +213,10 @@ func (g *game) selectPresident() player {
 		}
 	}
 
-	// go func() {
-	// 	website := Website{"Secret Hitler", time.Now().Format(time.Stamp),
-	// 		g.website.Players_name,
-	// 		g.website.Players_side,
-	// 		g.website.Players_alive,
-	// 		[]string{"_", "_", "_", "_", "_"},
-	// 		[]string{"_", "_", "_", "_", "_", "_"},
-	// 		g.website.Current_President,
-	// 		g.website.Current_President,
-	// 	}
-	// 	template := template.Must(template.ParseFiles("web/main.html"))
-	// 	go func() {
-	// 		http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	// 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 			if game_title := r.FormValue("white_background"); game_title != "" {
-	// 				website.Game_title = game_title
-	// 			}
-	// 			if err := template.ExecuteTemplate(w, "main.html", website); err != nil {
-	// 				http.Error(w, err.Error(), http.StatusInternalServerError)
-	// 			}
-	// 		})
-	// 		fmt.Println(http.ListenAndServe(":8001", nil))
-	// 	}()
-
-	// }()
-
 	g.currentPresident = nextPresident
 	return nextPresident
 
 }
-
-// func (g *game) selectChancellor(president player) player {
-// 	var choice player
-// 	fmt.Printf("%s, choisis un chancelier", president.name)
-// 	for _, p := range g.players {
-// 		if p.name != g.currentChancellor && p.alive && p.name != g.currentPresident {
-// 			fmt.Printf(" %s", p.name)
-// 			choice = p
-// 			break
-// 		}
-// 	}
-// 	fmt.Printf("%s, propose pour chancelier", choice.name)
-// 	fmt.Println()
-
-// 	return choice
-// }
 
 func (g *game) selectChancellor(president player, chancelier player) player {
 	var choice player
@@ -268,33 +226,6 @@ func (g *game) selectChancellor(president player, chancelier player) player {
 	g.propChancellor = choice
 	return choice
 }
-
-// func (g *game) selectChancellor(presi player, p player) player {
-// 	nextPresident := player{}
-// 	nextPresident = p
-// 	g.currentPresident = nextPresident.name
-// 	fmt.Println("Le chancelier %q choisit pour président %q.\n", ,nextPresident)
-// 	return nextPresident
-
-// }
-
-// func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
-// 	//discarded := make([]string, 0)
-// 	fmt.Printf("%s, choisis une carte à défausser : ", president.name)
-// 	for _, card := range cards {
-// 		fmt.Printf(" %s", card)
-// 	}
-// 	fmt.Println()
-// 	// Scan choix du president
-// 	var choice1 string
-// 	fmt.Scanln(&choice1)
-// 	// On defausse la carte
-// 	g.discard = append(g.discard, choice1)
-// 	// On enleve la carte des cartes à choisir
-// 	cards = remove(cards, choice1)
-
-// 	return g.discard, cards
-// }
 
 func (g *game) presidentDiscards(president player, cards []string) ([]string, []string) {
 	var choice string
@@ -347,24 +278,6 @@ func (g *game) reshuffle() {
 	g.deck = append(g.deck, g.discard...)
 	g.discard = make([]string, 0)
 }
-
-// func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (string, string) {
-// 	fmt.Printf("%s, choisis une loi à adopter :", chancellor.name)
-// 	for _, card := range cards {
-// 		fmt.Printf(" %s", card)
-// 	}
-// 	fmt.Println()
-// 	var choice string
-// 	var not_choose string
-// 	fmt.Scanln(&choice)
-// 	if choice == cards[0] {
-// 		not_choose = cards[1]
-// 	} else {
-// 		not_choose = cards[0]
-// 	}
-
-// 	return choice, not_choose
-// }
 
 func (g *game) chancellorEnacts(chancellor player, cards, discarded []string) (string, string) {
 	var choice string
@@ -604,7 +517,7 @@ func (g *game) start() { //ag *agentMJ
 				g.enactPolicy(enacted)
 				if g.executionAvailable {
 					g.executionAvailable = false
-					fmt.Printf("\n\nAAHAHAKYEGKBDYZGEUYGZIEUYGIZUYEGDIUYZGEIDUYGZEIGYDZZYBDGEZYDTBGUEZYTGDUYZETGDUYGZEUD\n\n")
+					fmt.Printf("\n\nPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANNNNNNNNNNNNNNNN\n\n")
 					time.Sleep(1 * time.Second)
 					for _, p := range g.players {
 						if g.currentPresident.name == p.name {
@@ -627,7 +540,7 @@ func (g *game) start() { //ag *agentMJ
 			}
 
 			if g.chaos {
-				fmt.Print("C'est le chaos !!")
+				fmt.Print("C'est le chaos !! ")
 				card := g.drawCards(1)
 				g.enactPolicy(card[0])
 				president = g.selectPresident()
