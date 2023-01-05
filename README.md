@@ -82,7 +82,7 @@ Le maître de jeu organise le bon déroulement de la partie et communique aux jo
 [à compléter]
 
 Pour le front-end, Nous utilisons Gorilla WebSocket, qui est une implémentation Go du protocole WebSocket. Il créera un serveur et enverra des messages au site Web toutes les 200 ms. Le Web se met à jour automatiquement et lui montre comment le jeu fonctionne. 
-[WebSocket](https://github.com/gorilla/websocket)
+Lien vers les [WebSocket](https://github.com/gorilla/websocket).
 
 ## Bilan
 
