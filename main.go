@@ -6,14 +6,6 @@ import (
 
 func main() {
 
-	// go func() {
-
-	// }()
-
-	// go func() {
-
-	// }()
-
 	c := make(chan voteRequest)
 	g := newGame([]string{"Vinh", "Wassim", "Pierre", "Sylvain", "Jérôme", "Nathan"})
 	g.c = c
