@@ -81,7 +81,7 @@ Pour le back-end, nous avons 4 fichiers : main.go, player.go (agent client), gam
 Le maître de jeu organise le bon déroulement de la partie et communique aux joueurs les résultats de leurs votes tandis que les joueurs prennent des décisions en fonction de leur rôle, leur stratégie et leurs croyances (qui évoluent compte tenu des comportements des autres joueurs). Il y a aussi une partie de hasard qui réside dans les attributions des rôles puis, tout du long de la partie, dans les cartes piochées par les joueurs et qui rend chaque partie absolument unique.
 [à compléter]
 
-Pour le front-end, Nous utilisons Gorilla WebSocket, qui est une implémentation Go du protocole WebSocket. Il créera un serveur et enverra des messages au site Web toutes les 200 ms. Le Web se met à jour automatiquement et lui montre comment le jeu fonctionne. 
+Pour le front-end, nous utilisons Gorilla WebSocket, qui est une implémentation Go du protocole WebSocket. Il créera un serveur et enverra des messages au site Web toutes les 200 ms. Le Web se met à jour automatiquement et lui montre comment le jeu fonctionne. 
 Lien vers les [WebSocket](https://github.com/gorilla/websocket).
 
 ## Bilan
