@@ -16,7 +16,7 @@ Les libéraux ne connaissent bien-sûr le parti d'aucun des joueurs.
 
 ### Conditions de victoire
 Libéraux : 5 lois libérales promulguées OU Hitler exécuté.
-Fascites : 6 lois fascistes promulguées OU Hitler élu Chancelier avec 3 lois fascistes promulguées.
+Fascistes : 6 lois fascistes promulguées OU Hitler élu Chancelier avec 3 lois fascistes promulguées.
 
 ### Règles spéciales
 Chaos : 
@@ -47,7 +47,7 @@ Le jeton Election est sur 3 --> CHAOS
 - Le Président pioche 3 cartes LOIS et les regarde. Il en défausse une puis donne les 2 restantes au Chancelier.
 - Le Chancelier regarde les cartes. Il en défausse une puis promulgue l'autre.
 Cas particuliers :
-- Si il y a déjà 5 lois fascites, le Chancelier peut utiliser son veto lorsqu'il reçoit les 2 cartes du Président. Si il est accepté par le Président, on commence un nouveau tour. Sinon la règle normale.
+- Si il y a déjà 5 lois fascistes, le Chancelier peut utiliser son veto lorsqu'il reçoit les 2 cartes du Président. Si il est accepté par le Président, on commence un nouveau tour. Sinon la règle normale.
 - La loi octroie un pouvoir. Le Président doit l'utiliser avant de passer au tour suivant.
 
 
@@ -64,7 +64,7 @@ Nous sommes sensés observer un plateau de jeu avec des joueurs (ayant des noms,
 
 ### Problématique
 
-Grâce à la simulation, nous tenterons de mettre en évidence la meilleur stratégie à adopter, selon les rôles, pour jouer (et gagner) à Secret Hitler.
+Grâce à la simulation, nous tenterons de mettre en évidence quels traits de personnalité peuvent influer sur les résultats. Nous essaierons également de déterminer si le jeu est équilibré ou non.
 
 ## Installation et lancement du jeu
 Pour exécuter le projet "Secret Hitler", vous devez suivre ces étapes :
@@ -111,6 +111,26 @@ func RandomNormal(mean, stdDev float64) float64 {
 ```
 
 ## Bilan
+
+Pour répondre à nos problématiques, nous avons choisi 9 types de parties différentes, avec différents profils de joueurs (bon, moyen et mauvais menteur (5, 2.5 et 0) et très perspicace, perspicace et peu perspicace (1, 0.5 et 0)). La statistique menteur est comprise entre 0 et 5, et la perspicacité entre 0 et 1. Nous avons réalisé 8 parties pour les 9 types de parties, soit 72 parties.
+
+Voici les résultats :
+
+|               | Bon menteur | Menteur moyen | Mauvais menteur |
+|---------------|-------------|----------------|-----------------|
+| Très perspicace | 50%        | 50%            | 62.5%           |
+| Perspicace      | 37.5%      | 37.5%          | 50%             |
+| Peu perspicace  | 12.5%      | 25%            | 25%             |
+
+
+Nous arrivons aux conclusions que :
+Si tout le monde ment mal, le taux de victoire des libéraux augmente et inversement.
+Si tout le monde est perspicace, le taux de victoire des libéraux augmente et inversement.
+Un agent fasciste mentant bien a plus de chance de gagner.
+Un agent libéral perspicace a plus de chance de gagner.
+Dans le cadre de parties avec de bons joueurs (bon menteurs et très perspicaces), le jeu est équilibré.
+Cependant, avec des joueurs de niveaux variés, on a globalement plus de chance de gagner quand on est fasciste (61% de taux de réussite)
+Quand le niveau baisse, le hasard a plus de place donc les fascistes ont encore plus de chance.
 
 ### Points positifs
 1. Permet de suivre une partie de A à Z étape par étape et ainsi d'apprendre les règles du jeu très vite ou bien de décortiquer si l'on veut aller plus loin dans l'analyse de jeu.
