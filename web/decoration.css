@@ -1,0 +1,152 @@
+body {
+    min-height: 150%;
+    /* background-image: url("/static/white_background.png"); */
+    background-blend-mode:  overlay;
+    background-size: cover;
+}
+
+.welcome {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 2rem;
+    color:rgb(173, 37, 13);
+}
+
+.title{
+    height: 600px;
+    display: flex;
+    justify-content: center;    
+    align-items: center;
+    background-image: url("./image/title.png");
+}
+
+.center {
+    height: 100px;
+     display: flex;
+     justify-content: center;
+     align-items: center
+}
+
+.board {
+    /* border: 1px solid black; */
+    margin: 1rem;
+    text-align: center;
+    height: 300px;
+}
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.liberal_board {
+    display: inline-block;
+    vertical-align: middle;
+    /* border: 1px solid green; */
+    height: 250px;
+    width: 40%;
+    background-image: url("./image/liberal_board.png");
+    background-size: 100% 100%;
+    
+}
+.fascist_board {
+    display: inline-block;
+    vertical-align: middle;
+    /* border: 1px solid green; */
+    height: 250px;
+    width: 50%;
+    background-image: url("./image/fascist_board.png");
+    background-size: 100% 100%;
+}
+.liberal_card{
+    display: inline-block;
+    margin-top: 60px;
+    /* border: 1px solid red; */
+    vertical-align: middle;
+    height: 120px;
+    width: 12%;
+    background-size: 100% 100%;
+}
+.fascist_card{
+    display: inline-block;
+    margin-top: 60px;
+    /* border: 1px solid red; */
+    vertical-align: middle;
+    height: 120px;
+    width: 13%;
+    background-size: 100% 100%;
+}
+
+.player_board {
+    border: 1px solid black;
+    margin: 1rem;
+    padding: 2rem 2rem;
+    text-align: center;
+}
+
+.player{
+    text-align: center;
+    display: block ;
+    border: 1px solid white;
+    width: 600px; 
+    height:120px;
+    margin-top: 20px;
+}
+.player_name{
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+.player_side{
+    display: inline-block;
+    /* border: 1px solid green; */
+    padding: 1rem 1rem;
+    vertical-align: middle;
+    height: 100px;
+    width: 60px;
+    background-size: 100% 100%;
+}
+#president_name{
+    display: inline-block;
+    /* border: 1px solid green; */
+    vertical-align: middle;
+    height: 50px;
+    width: 30%;
+    background-image: url(./image/president.png);
+    background-size: 100% 100%;
+}
+#chancellor_name{
+    display: inline-block;
+    /* border: 1px solid green; */
+    vertical-align: middle;
+    height: 50px;
+    width: 30%;
+    background-image: url(./image/chancellor.png);
+    background-size: 100% 100%;
+}
+#candidat_name{
+    display: inline-block;
+    /* border: 1px solid green; */
+    vertical-align: middle;
+    height: 50px;
+    width: 30%;
+    background-image: url(./image/candidat.png);
+    background-size: 100% 100%;
+}
+#result_vote_card{
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+    height: 60px;
+    width: 100px;
+    background-size: 100% 100%;
+}
+
+.player_answer{
+    display: inline-block;
+    border: 1px solid green;
+    padding: 1rem 1rem;
+    vertical-align: middle;
+    width: 200px;
+    height: 30px;
+}
