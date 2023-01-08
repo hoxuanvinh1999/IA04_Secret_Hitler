@@ -68,7 +68,7 @@ Grâce à la simulation, nous tenterons de mettre en évidence quels traits de p
 
 ## Installation et lancement du jeu
 Pour exécuter le projet "Secret Hitler", vous devez suivre ces étapes :
-1. Cloner ce projet dans votre machine propre: $ git clone https://gitlab.utc.fr/nleboude/ia04-secret-hitler --branch Branche_de_travail_Nathan
+1. Cloner ce projet dans votre machine propre: $ git clone https://github.com/hoxuanvinh1999/IA04_Secret_Hitler.git
 2. Entrer dans le dossier "ia04-secret-hitler" : $ cd ia04-secret-hitler/
 Créer le module : $ go mod init ia04-secret-hitler
 3. Ajouter le package go gorilla/websocket : $ go run .go get github.com/gorilla/websocket
